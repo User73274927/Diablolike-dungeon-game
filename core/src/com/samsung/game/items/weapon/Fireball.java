@@ -17,7 +17,8 @@ public class Fireball extends Shell implements AnimationComponent {
     private Vector2 pos;
     private float speed;
 
-    public Fireball(Map map, float damage_min, float damage_max, float x, float y, int angle) {
+    public Fireball(Map map, int damage_min, int damage_max, float x, float y, int angle) {
+        super(damage_min, damage_max);
         this.map = map;
         this.hitbox = new Rectangle(x, y, 20, 20);
         this.pos = new Vector2();
