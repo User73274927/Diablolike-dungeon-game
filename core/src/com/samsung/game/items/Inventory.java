@@ -1,16 +1,11 @@
 package com.samsung.game.items;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
 import com.samsung.game.engine.Component;
 
-public class Inventory implements Component {
+public class Inventory {
     private Item[][] container;
-
-
-    @Override
-    public void draw(Batch batch) {
-
-    }
 
     public boolean addItem(Item item) {
         for (int i = 1; i <= container.length; i++) {

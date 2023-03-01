@@ -2,7 +2,6 @@ package com.samsung.game.controllers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.samsung.game.entities.Entity;
 import com.samsung.game.entities.Knight;
 
 public class PlayerController {
@@ -14,16 +13,18 @@ public class PlayerController {
 
     public void keyHandler() {
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            player.y += 5;
+            player.setDirection(Knight.Direction.UP);
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            player.x -= 5;
+            player.setDirection(Knight.Direction.LEFT);
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            player.y -= 5;
+            player.setDirection(Knight.Direction.DOWN);
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            player.x += 5;
+            player.setDirection(Knight.Direction.RIGHT);
+        } else {
+            player.setDirection(Knight.Direction.STOP);
         }
     }
 }
