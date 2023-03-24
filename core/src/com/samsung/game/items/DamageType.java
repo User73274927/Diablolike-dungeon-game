@@ -1,4 +1,4 @@
-package com.samsung.game.items.weapon;
+package com.samsung.game.items;
 
 public enum DamageType {
     PHYSICAL, COLD, FIRE

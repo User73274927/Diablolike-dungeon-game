@@ -25,8 +25,8 @@ public class Map implements Component {
                for (int j = 0; j < char_map[0].length; j++) {
                     if (char_map[i][j] == TestAssets.WALL) {
                          Wall wall = new Wall(wall_tx);
-                         wall.x = Tile.SIZE * j;
-                         wall.y = Tile.SIZE * f;
+                         wall.x = wall.getWidth() * j;
+                         wall.y = wall.getHeight() * f;
                          tile_map[i][j] = wall;
                     }
                }
@@ -48,6 +48,16 @@ public class Map implements Component {
 
      public Tile[][] getTileMap() {
           return tile_map;
+     }
+
+     @Override
+     public float getX() {
+          return 0;
+     }
+
+     @Override
+     public float getY() {
+          return 0;
      }
 
 }

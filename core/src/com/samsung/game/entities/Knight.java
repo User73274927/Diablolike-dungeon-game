@@ -2,50 +2,102 @@ package com.samsung.game.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import com.badlogic.gdx.math.Rectangle;
-import com.samsung.game.engine.AnimationComponent;
-import com.samsung.game.engine.Damage;
+import com.samsung.game.engine.ProjectileManager;
+import com.samsung.game.items.Equipable;
+import com.samsung.game.items.armor.Helmet;
 import com.samsung.game.items.weapon.FireWeapon;
 import com.samsung.game.items.weapon.Fireball;
+import com.samsung.game.items.armor.Armor;
+import com.samsung.game.items.Inventory;
 import com.samsung.game.map.Map;
+import com.samsung.game.map.Tile;
+import com.samsung.game.utils.PxNumber;
 
 import java.util.HashMap;
-import java.util.Optional;
 
-public class Knight extends PhysicalEntity implements AnimationComponent {
+public class Knight extends Entity {
     private TextureRegion[][] knight_frames;
     private HashMap<String, Animation<TextureRegion>> walkAnimationDict;
     private Animation<TextureRegion> current_animation;
+    private KnightView view;
 
     private TextureRegion current_frame;
+    private ProjectileManager<Fireball> projectile_handler;
+    private Inventory inventory;
     private float time;
-    private Damage weapon;
-    private FireWeapon weapon1;
 
-    public float lx, ly;
-    private int knight_speed;
+    private Equipable<? super Entity> used_item;
+    private Armor helmet;
+    private Armor armor;
+
     private int speed;
     private Map map;
-    private Fireball fireball;
 
-    public Knight(Map map, int size, int x, int y) {
-        super(100, 50, 25, 30);
+    public enum State {
+        EVADING, TELEPORT
+    }
+
+    public class KnightView extends View {
+        private OrthographicCamera camera;
+
+        public KnightView(OrthographicCamera camera) {
+            super();
+            this.camera = camera;
+        }
+
+        @Override
+        public void draw(Batch batch) {
+            updateAttack();
+            batch.draw(current_frame, pos.x, pos.y,
+                    getWidth(), getHeight()
+            );
+
+            if (used_item instanceof FireWeapon) {
+                ((FireWeapon) used_item).draw(batch);
+            }
+
+            PxNumber n = new PxNumber(health, (int) camera.position.x + 150, (int) camera.position.y + 150, 30);
+            n.draw(batch);
+
+            helmet.setIconX(camera.position.x - camera.viewportWidth / 2 + 10);
+            helmet.setIconY(camera.position.y + camera.viewportHeight / 2 - Tile.SIZE - 10);
+
+            armor.setIconX(camera.position.x - camera.viewportWidth / 2 + 10);
+            armor.setIconY(camera.position.y + camera.viewportHeight / 2 - Tile.SIZE - 50);
+
+            armor.draw(batch);
+            helmet.draw(batch);
+        }
+    }
+
+    public Knight(OrthographicCamera camera, Map map) {
+        super(30, 30);
+        this.view = new KnightView(camera);
+        setView(view);
         this.map = map;
-        this.direction = Direction.STOP;
-        getPos().add(x, y);
-        speed = knight_speed = 5;
         start();
     }
+
     @Override
-    public void onSpawn(float x, float y) {
+    public void onSpawn() {
         final Texture knight_asset = new Texture("tiles/player-example1.png");
         current_frame = new TextureRegion(knight_asset);
-        weapon1 = new FireWeapon(map);
+        projectile_handler = new ProjectileManager<>();
+
+        used_item = new FireWeapon();
+        used_item.setOwner(this);
+
+        helmet = new Helmet(this);
+        helmet.iconVisible(true);
+
+        armor = new Armor(this);
+        armor.iconVisible(true);
 //        walkAnimationDict = new HashMap<>();
 //
 //        knight_frames = TextureRegion.split(knight_asset,
@@ -58,26 +110,30 @@ public class Knight extends PhysicalEntity implements AnimationComponent {
 //
 //        current_animation = walkAnimationDict.get("right");
 //        current_frame = current_animation.getKeyFrame(time);
+        speed = 5;
         health = 100;
     }
 
     @Override
     public void update() {
         move();
-        weapon1.x = pos.x;
-        weapon1.y = pos.y;
         detectCollision(map);
     }
 
-    @Override
-    public void draw(Batch batch) {
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            weapon1.shoot(new Fireball(map, 30, 30, pos.x, pos.y, 77));
+    private void updateAttack() {
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+            used_item.onClick();
         }
-        weapon1.draw(batch);
-        batch.draw(current_frame, getPos().x, getPos().y,
-                getWidth(), getHeight()
-        );
+    }
+
+    @Override
+    public float getX() {
+        return pos.x;
+    }
+
+    @Override
+    public float getY() {
+        return pos.y;
     }
 
     private void move() {
@@ -97,11 +153,6 @@ public class Knight extends PhysicalEntity implements AnimationComponent {
         }
     }
 
-    @Override
-    public void updateFrame() {
-
-    }
-
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
@@ -110,4 +161,15 @@ public class Knight extends PhysicalEntity implements AnimationComponent {
     public void onDie() {
 
     }
+
+    @Override
+    public int getWidth() {
+        return Tile.SIZE;
+    }
+
+    @Override
+    public int getHeight() {
+        return Tile.SIZE;
+    }
+
 }

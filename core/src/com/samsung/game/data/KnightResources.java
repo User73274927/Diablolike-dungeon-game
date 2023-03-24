@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.Map;
-import java.util.HashMap;
 
 public class KnightResources extends ResourceManager {
     private Texture knight_atlas;
@@ -16,7 +15,4 @@ public class KnightResources extends ResourceManager {
         System.out.println("Hello");
     }
 
-    private void method(int a) {
-        int aa = a;
-    }
 }

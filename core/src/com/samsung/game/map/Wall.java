@@ -2,9 +2,9 @@ package com.samsung.game.map;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
-import com.samsung.game.engine.Colliable;
+import com.samsung.game.engine.Collideable;
 
-public class Wall extends Tile implements Colliable {
+public class Wall extends Tile implements Collideable {
     private Rectangle hitbox;
 
     public Wall(Texture texture) {
@@ -13,9 +13,22 @@ public class Wall extends Tile implements Colliable {
     }
 
     @Override
-    public Rectangle getHitbox() {
-        hitbox.x = x;
-        hitbox.y = y;
-        return hitbox;
+    public int getWidth() {
+        return (int) hitbox.width;
+    }
+
+    @Override
+    public int getHeight() {
+        return (int) hitbox.height;
+    }
+
+    @Override
+    public float getX() {
+        return x;
+    }
+
+    @Override
+    public float getY() {
+        return y;
     }
 }

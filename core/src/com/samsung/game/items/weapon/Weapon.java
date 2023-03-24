@@ -1,14 +1,55 @@
 package com.samsung.game.items.weapon;
 
-import com.samsung.game.items.Item;
 import com.samsung.game.engine.Damage;
+import com.samsung.game.entities.Entity;
+import com.samsung.game.items.Equipable;
+import com.samsung.game.items.Item;
 
-public abstract class Weapon extends Item implements Damage {
-    private int damage_min, damage_max;
+public abstract class Weapon extends Item {
+    private Entity owner;
+    private int require_level;
 
-    public Weapon(int damage_min, int damage_max) {
-        this.damage_max = damage_max;
-        this.damage_min = damage_min;
+    private int damage_min;
+    private int damage_max;
+
+
+    public Weapon() {
+
     }
 
+    @Override
+    public float getX() {
+        return owner.getCenterX();
+    }
+
+    @Override
+    public float getY() {
+        return owner.getCenterY();
+    }
+
+    public void setDamageBounds(int min, int max) {
+        if (min <= max) {
+            this.damage_min = min;
+            this.damage_max = max;
+        } else {
+            System.out.println(getClass().getName() + ": incorrect damage arguments");
+        }
+    }
+
+    public void setRequireLevel(int level) {
+        if (level <= Entity.MAX_LEVEL) {
+            this.require_level = level;
+        }
+    }
+    public int getDamage() {
+        return (int) (damage_min + Math.random() * damage_max);
+    }
+
+    public abstract Entity getOwner();
+
+    @Override
+    public String toString() {
+        return "damage: " + damage_min + "-" + damage_max + "\n" +
+                "required level: " + require_level;
+    }
 }

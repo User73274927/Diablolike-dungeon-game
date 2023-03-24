@@ -13,6 +13,8 @@ import com.samsung.game.entities.Bandit;
 import com.samsung.game.entities.Enemy;
 import com.samsung.game.entities.Entity;
 import com.samsung.game.entities.Knight;
+import com.samsung.game.items.Item;
+import com.samsung.game.items.weapon.Projectile;
 import com.samsung.game.map.Map;
 import com.samsung.game.utils.GameUtils;
 import com.samsung.game.utils.PxNumber;
@@ -21,34 +23,33 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class LevelManager {
-    public static final Logger log = new Logger("TTT");
-    private Set<Component> visible_components;
+    public static Set<Component> visible_components = new HashSet<>();
     private PlayerController controller;
     private Knight player;
-    private PxNumber nm;
 
-    private Viewport port;
     private OrthographicCamera camera;
     private Map map;
 
     public LevelManager(Map map) {
         this.map = map;
         map.load();
-        this.player = new Knight(map, 2, 50 ,80);
-        this.nm = new PxNumber(0, 100, 50, 15);
-        this.controller = new PlayerController(player);
+
         this.camera = new OrthographicCamera(500,
                 GameUtils.relatedFrom(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 500));
+        this.player = new Knight(camera, map);
+        this.controller = new PlayerController(player);
 
         new Bandit(500, 200, 25,30).start();
         new Bandit(150, 30, 25,30).start();
         new Bandit(200, 100, 25,30).start();
         new Bandit(300, 75, 25,30).start();
+
+        System.out.println(this);
     }
 
     public void update(Batch batch) {
         batch.setProjectionMatrix(camera.combined);
-        camera.position.set(player.getCenterPos(), 0);
+        camera.position.set(player.getCenterX(), player.getCenterY(), 0);
         camera.update();
         ScreenUtils.clear(Color.BLACK);
         controller.keyHandler();
@@ -56,14 +57,31 @@ public class LevelManager {
         batch.begin();
         map.draw(batch);
 
-        for (Entity entity : Entity.all()) {
-            entity.draw(batch);
+        synchronized (this) {
+            for (Entity entity : Entity.all()) {
+                entity.getView().draw(batch);
+            }
+        }
+
+        for (Component item : visible_components) {
+            item.draw(batch);
         }
 
         batch.end();
+
+        System.out.println("camera x: " + camera.position.x +
+                "\ncamera y: " + camera.position.y);
     }
 
     private void drawScreen() {
 
+    }
+
+    @Override
+    public String toString() {
+        return "viewport world width: " + camera.viewportWidth +
+                "\nviewport world height: " + camera.viewportHeight +
+                "\ncamera x: " + camera.direction.x +
+                "\ncamera y: " + camera.direction.y;
     }
 }
