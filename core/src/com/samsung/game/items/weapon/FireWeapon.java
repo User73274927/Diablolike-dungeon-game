@@ -36,11 +36,17 @@ public class FireWeapon extends Weapon implements Equipable<Entity> {
 
     @Override
     public float getX() {
+        if (owner == null) {
+            return 0;
+        }
         return owner.getCenterX();
     }
 
     @Override
     public float getY() {
+        if (owner == null) {
+            return 0;
+        }
         return owner.getCenterY();
     }
 

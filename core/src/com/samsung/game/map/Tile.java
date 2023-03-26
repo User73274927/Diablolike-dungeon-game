@@ -2,9 +2,9 @@ package com.samsung.game.map;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.samsung.game.engine.Component;
+import com.samsung.game.engine.Drawable;
 
-public abstract class Tile implements Component {
+public abstract class Tile implements Drawable {
     public static final int SIZE = 30;
     private Texture texture;
     public int x, y;

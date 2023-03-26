@@ -20,6 +20,8 @@ public class Bandit extends Enemy {
         @Override
         public void draw(Batch batch) {
             super.draw(batch);
+            f.shoot();
+            f.draw(batch);
         }
     }
 

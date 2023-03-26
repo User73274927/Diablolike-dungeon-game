@@ -1,5 +1,7 @@
 package com.samsung.game.utils;
 
+import java.util.LinkedList;
+
 public class GameUtils {
     public static boolean intersects() {
         return false;

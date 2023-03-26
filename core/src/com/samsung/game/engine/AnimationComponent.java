@@ -1,5 +1,5 @@
 package com.samsung.game.engine;
 
-public interface AnimationComponent extends Component {
+public interface AnimationComponent extends Drawable {
     public void updateFrame();
 }

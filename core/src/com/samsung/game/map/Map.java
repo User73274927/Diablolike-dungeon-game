@@ -2,12 +2,11 @@ package com.samsung.game.map;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.samsung.game.engine.Component;
+import com.samsung.game.engine.Drawable;
 import com.samsung.game.utils.TestAssets;
 
-public class Map implements Component {
+public class Map implements Drawable {
      private Tile[][] tile_map;
      private Texture wall_tx;
      private Vector2 player_pos;

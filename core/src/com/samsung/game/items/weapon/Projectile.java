@@ -4,9 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.samsung.game.engine.Collideable;
-import com.samsung.game.engine.Component;
 import com.samsung.game.engine.Damage;
-import com.samsung.game.engine.ProjectileManager;
+import com.samsung.game.engine.Drawable;
 import com.samsung.game.entities.Entity;
 
 import java.util.HashSet;

@@ -14,17 +14,6 @@ public abstract class Weapon extends Item {
 
 
     public Weapon() {
-
-    }
-
-    @Override
-    public float getX() {
-        return owner.getCenterX();
-    }
-
-    @Override
-    public float getY() {
-        return owner.getCenterY();
     }
 
     public void setDamageBounds(int min, int max) {
@@ -41,8 +30,18 @@ public abstract class Weapon extends Item {
             this.require_level = level;
         }
     }
+
     public int getDamage() {
         return (int) (damage_min + Math.random() * damage_max);
+    }
+    @Override
+    public float getX() {
+        return owner.getCenterX();
+    }
+
+    @Override
+    public float getY() {
+        return owner.getCenterY();
     }
 
     public abstract Entity getOwner();

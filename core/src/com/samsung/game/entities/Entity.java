@@ -1,20 +1,16 @@
 package com.samsung.game.entities;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.samsung.game.engine.Collideable;
-import com.samsung.game.engine.Component;
+import com.samsung.game.engine.Drawable;
 import com.samsung.game.map.Map;
 import com.samsung.game.map.Tile;
 import com.samsung.game.map.Wall;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Vector;
 
 public abstract class Entity extends Thread implements Collideable {
     public static final int MAX_LEVEL = 100;
@@ -22,6 +18,7 @@ public abstract class Entity extends Thread implements Collideable {
     public static final float MAX_RESISTANCE = 80;
     public static int MAX_HEALTH;
 
+    public final int local_id;
     private HashMap<String, Animation<TextureRegion>> animation;
     private Tile current_collide_tile;
     protected TextureRegion current_frame;
@@ -34,17 +31,15 @@ public abstract class Entity extends Thread implements Collideable {
     private int cold_resistance = 0;
 
     protected Direction direction;
+    protected Integer health;
     private float speed;
 
-    protected int health;
-    protected int stamina;
-    protected int level;
 
     public enum Direction {
         STOP, UP, DOWN, LEFT, RIGHT
     }
 
-    public abstract class View implements Component {
+    public abstract class View implements Drawable {
 
         public View() {
 
@@ -59,15 +54,17 @@ public abstract class Entity extends Thread implements Collideable {
         public float getY() {
             return pos.y;
         }
+
     }
 
     public Entity(float x, float y) {
+        Entity.add(this);
+        local_id = Entity.all.size();
+
         pos = new Vector2(x, y);
         direction = Direction.STOP;
         width = Tile.SIZE;
         height = Tile.SIZE;
-        Entity.add(this);
-        onSpawn();
     }
 
     public Entity() {
@@ -139,10 +136,6 @@ public abstract class Entity extends Thread implements Collideable {
         }
     }
 
-    public void addStamina(int points) {
-
-    }
-
     public float getCenterX() {
         return pos.x + width / 2f;
     }
@@ -158,6 +151,9 @@ public abstract class Entity extends Thread implements Collideable {
     public Tile getCurrentCollideTile() {
         return current_collide_tile;
     }
+    public Integer getHealth() {
+        return health;
+    }
 
     public Vector2 getPos() {
         return pos;
@@ -171,7 +167,6 @@ public abstract class Entity extends Thread implements Collideable {
         return view;
     }
 
-
     public abstract void onSpawn();
     public abstract void update();
     public abstract void onDie();
@@ -181,12 +176,10 @@ public abstract class Entity extends Thread implements Collideable {
     // Entities data
     private static HashSet<Entity> all;
     private static HashSet<Thread> all_threads;
-    private static HashSet<Entity> dead;
 
 
     static {
         all = new HashSet<>();
-        dead = new HashSet<>();
         all_threads = new HashSet<>();
     }
 
@@ -205,10 +198,6 @@ public abstract class Entity extends Thread implements Collideable {
     public static void add(Entity entity) {
         all_threads.add(entity);
         all.add(entity);
-    }
-
-    public static void addToDead(Entity entity) {
-        dead.add(entity);
     }
 
     public static void remove(Entity entity) {

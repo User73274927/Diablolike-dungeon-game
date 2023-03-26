@@ -1,13 +1,15 @@
 package com.samsung.game.items;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Vector2;
-import com.samsung.game.engine.Component;
+import java.util.ArrayList;
 
-public class Inventory {
+public class Inventory<T extends Item> {
     private Item[][] container;
 
-    public boolean addItem(Item item) {
+    public Inventory(int cols, int rows) {
+        this.container = new Item[cols][rows];
+    }
+
+    public boolean addItem(T item) {
         for (int i = 1; i <= container.length; i++) {
             for (int j = 1; j < container[0].length; j++) {
                 if (this.addItem(item, i, j)) {
@@ -18,12 +20,37 @@ public class Inventory {
         return false;
     }
 
-    public boolean addItem(Item item, int col_num, int row_num) {
+    public boolean addItem(T item, int col_num, int row_num) {
         col_num--; row_num--;
         if (container[col_num][row_num] != null) {
             return false;
         }
         container[col_num][row_num] = item;
         return true;
+    }
+
+    public int rows() {
+        return container[0].length;
+    }
+
+    public T getItem(int col, int row) {
+        return (T) container[col][row];
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder list = new StringBuilder();
+
+        for (Item[] col : container) {
+            for (Item item : col) {
+                if (item == null) {
+                    list.append("null ");
+                } else {
+                    list.append("obj ");
+                }
+            }
+            list.append('\n');
+        }
+        return list.toString();
     }
 }

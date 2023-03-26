@@ -1,8 +1,5 @@
 package com.samsung.game.items.potions;
 
-import com.samsung.game.entities.Entity;
-import com.samsung.game.entities.Knight;
-
 public enum Potions {
     HEALTH("health-potion", new Potion() {
         @Override
@@ -14,7 +11,7 @@ public enum Potions {
     STAMINA("stamina-potion", new Potion() {
         @Override
         public void onClick() {
-            owner.addStamina(30);
+
         }
     });
 

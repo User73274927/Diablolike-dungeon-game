@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.samsung.game.engine.LevelManager;
 import com.samsung.game.items.Item;
 import com.samsung.game.items.armor.Armor;
+import com.samsung.game.items.potions.Potion;
 
 public abstract class Enemy extends Entity {
     private String name;
@@ -15,14 +16,22 @@ public abstract class Enemy extends Entity {
 
     public Enemy(float x, float y) {
         super(x, y);
-        setView(new EnemyView());
-        current_frame = new TextureRegion(new Texture("tiles/player-example1.png"));
-        drop_item = new Armor(this);
-        LevelManager.visible_components.add(drop_item);
+        current_frame = new TextureRegion(new Texture("sprites/player-example1.png"));
+        Potion potion = new Potion() {
+            @Override
+            public void onClick() {
+                owner.addHealth(30);
+            }
+        };
+        potion.setOwner(this);
+        drop_item = potion;
+
         isDead = false;
         pos.x = x;
         pos.y = y;
 
+        LevelManager.visible_components.add(drop_item);
+        onSpawn();
     }
 
     public class EnemyView extends View {
@@ -32,10 +41,6 @@ public abstract class Enemy extends Entity {
                 batch.draw(current_frame, getX(), getY(), getWidth(), getHeight());
             }
         }
-    }
-
-    public void drop(Item item) {
-        item.itemVisible(true);
     }
 
     public String getEnemyName() {
@@ -48,9 +53,7 @@ public abstract class Enemy extends Entity {
 
     @Override
     public void onDie() {
-        synchronized (this) {
-            drop(drop_item);
-        }
+        drop_item.drop(getX(), getY());
         isDead = true;
         Entity.remove(this);
     }
