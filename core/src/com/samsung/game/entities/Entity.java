@@ -16,7 +16,7 @@ public abstract class Entity extends Thread implements Collideable {
     public static final int MAX_LEVEL = 100;
     public static final float MAX_SPEED = Tile.SIZE;
     public static final float MAX_RESISTANCE = 80;
-    public static int MAX_HEALTH;
+    public static int MAX_HEALTH = 100;
 
     public final int local_id;
     private HashMap<String, Animation<TextureRegion>> animation;
@@ -40,10 +40,6 @@ public abstract class Entity extends Thread implements Collideable {
     }
 
     public abstract class View implements Drawable {
-
-        public View() {
-
-        }
 
         @Override
         public float getX() {
@@ -129,7 +125,7 @@ public abstract class Entity extends Thread implements Collideable {
     }
 
     public void addHealth(int points) {
-        if (health < MAX_HEALTH) {
+        if (health + points < MAX_HEALTH) {
             this.health += points;
         } else {
             health = MAX_HEALTH;
@@ -176,7 +172,6 @@ public abstract class Entity extends Thread implements Collideable {
     // Entities data
     private static HashSet<Entity> all;
     private static HashSet<Thread> all_threads;
-
 
     static {
         all = new HashSet<>();

@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.samsung.game.entities.player.PlayerController;
 import com.samsung.game.entities.Bandit;
 import com.samsung.game.entities.Entity;
@@ -24,7 +26,6 @@ public class LevelManager {
     private PlayerController controller;
     private ViewPort port;
 
-    private OrthographicCamera camera;
     private Map map;
 
     public LevelManager(Map map) {
@@ -35,20 +36,22 @@ public class LevelManager {
         this.controller = new PlayerController(map);
         port = new ViewPort(controller);
 
-        new Bandit(500, 200, 25,30).start();
+        new Bandit(400, 200, 25,30).start();
         new Bandit(150, 30, 25,30).start();
         new Bandit(200, 100, 25,30).start();
         new Bandit(300, 75, 25,30).start();
 
+        multiplexer.addProcessor(port);
         multiplexer.addProcessor(controller);
         Gdx.input.setInputProcessor(multiplexer);
     }
 
     public void update(Batch batch) {
-        batch.setProjectionMatrix(port.getCamera().combined);
         port.act(Gdx.graphics.getDeltaTime());
-        port.update();
+        batch.setProjectionMatrix(port.getCamera().combined);
         controller.keyHandler();
+        port.update();
+        port.draw();
 
         batch.begin();
         map.draw(batch);
@@ -63,16 +66,8 @@ public class LevelManager {
             item.draw(batch);
         }
 
-        port.draw(batch, 1);
         batch.end();
 
     }
 
-    @Override
-    public String toString() {
-        return "viewport world width: " + camera.viewportWidth +
-                "\nviewport world height: " + camera.viewportHeight +
-                "\ncamera x: " + camera.direction.x +
-                "\ncamera y: " + camera.direction.y;
-    }
 }

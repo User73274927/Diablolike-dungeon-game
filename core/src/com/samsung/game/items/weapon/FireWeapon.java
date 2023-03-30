@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.samsung.game.engine.ProjectileManager;
 import com.samsung.game.entities.Entity;
 import com.samsung.game.items.Equipable;
+import com.samsung.game.items.projectiles.Projectile;
 
 public class FireWeapon extends Weapon implements Equipable<Entity> {
     private Entity owner;
@@ -18,9 +19,8 @@ public class FireWeapon extends Weapon implements Equipable<Entity> {
     }
 
     public void shoot() {
-        time += Gdx.graphics.getDeltaTime();
         if (time >= 0.1) {
-            handler.add(new M762(owner, 8, 0));
+            handler.add(new M762(owner, 10, 0));
             time = 0;
         }
     }
@@ -28,6 +28,7 @@ public class FireWeapon extends Weapon implements Equipable<Entity> {
     @Override
     public void draw(Batch batch) {
         handler.update();
+        time += Gdx.graphics.getDeltaTime();
 
         for (Projectile p : handler.getProjectiles()) {
             p.draw(batch);

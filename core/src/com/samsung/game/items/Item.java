@@ -1,9 +1,11 @@
 package com.samsung.game.items;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.samsung.game.engine.Collideable;
 import com.samsung.game.engine.Drawable;
 import com.samsung.game.map.Tile;
@@ -21,6 +23,8 @@ public abstract class Item implements Drawable, Collideable {
     protected Vector2 pos;
 
     public boolean item_visible;
+    //Расположение предмета в инвентаре, если предмет на земле то значения будут -1
+    private int col, row;
     protected Texture icon_texture;
 
     //@Deprecated
@@ -37,13 +41,14 @@ public abstract class Item implements Drawable, Collideable {
         pos = new Vector2();
         createUIView(UILocation.IN_INVENTORY);
         createUIView(UILocation.ON_SCREEN);
+        col = row = -1;
     }
 
     public void drop(float x, float y) {
         item_visible = true;
         this.pos.x = x;
         this.pos.y = y;
-
+        col = row = -1;
     }
 
     public Texture getIconTexture() {
@@ -74,6 +79,21 @@ public abstract class Item implements Drawable, Collideable {
         }
     }
 
+    public void setPosInInventory(int row, int col) {
+        if (row > 0 && col > 0) {
+            this.row = row;
+            this.col = col;
+        }
+    }
+
+    public int getCol() {
+        return col;
+    }
+
+    public int getRow() {
+        return row;
+    }
+
     @Override
     public float getX() {
         return pos.x;
@@ -102,6 +122,23 @@ public abstract class Item implements Drawable, Collideable {
         UIView() {
             icon_pos = new Vector2();
             icon_width = icon_height = Tile.SIZE;
+
+            addListener(new ClickListener() {
+                boolean dragged = true;
+
+                @Override
+                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                    Gdx.app.log("input", "item touch up");
+                    setIconX(x);
+                    setIconY(y);
+                }
+
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    dragged = false;
+                    return false;
+                }
+            });
         }
 
         @Override

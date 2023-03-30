@@ -1,8 +1,6 @@
 package com.samsung.game.engine;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.samsung.game.entities.Entity;
-import com.samsung.game.items.weapon.Projectile;
+import com.samsung.game.items.projectiles.Projectile;
 
 import java.util.HashSet;
 

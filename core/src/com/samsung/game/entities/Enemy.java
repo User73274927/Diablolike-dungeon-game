@@ -5,13 +5,11 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.samsung.game.engine.LevelManager;
 import com.samsung.game.items.Item;
-import com.samsung.game.items.armor.Armor;
 import com.samsung.game.items.potions.Potion;
 
 public abstract class Enemy extends Entity {
     private String name;
     private Item drop_item;
-
     private boolean isDead;
 
     public Enemy(float x, float y) {
@@ -30,7 +28,6 @@ public abstract class Enemy extends Entity {
         pos.x = x;
         pos.y = y;
 
-        LevelManager.visible_components.add(drop_item);
         onSpawn();
     }
 
@@ -53,6 +50,7 @@ public abstract class Enemy extends Entity {
 
     @Override
     public void onDie() {
+        LevelManager.visible_components.add(drop_item);
         drop_item.drop(getX(), getY());
         isDead = true;
         Entity.remove(this);

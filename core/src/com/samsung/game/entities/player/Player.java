@@ -1,7 +1,5 @@
 package com.samsung.game.entities.player;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -43,6 +41,7 @@ public class Player extends Entity {
             batch.draw(current_frame, pos.x, pos.y,
                     getWidth(), getHeight()
             );
+            inventory.draw(batch);
         }
 
     }
@@ -81,7 +80,7 @@ public class Player extends Entity {
 //        current_animation = walkAnimationDict.get("right");
 //        current_frame = current_animation.getKeyFrame(time);
         speed = 5;
-        health = 100;
+        health = Entity.MAX_HEALTH;
     }
 
     @Override
@@ -93,17 +92,20 @@ public class Player extends Entity {
     public void updateClick(float mouse_x, float mouse_y) {
         for (Item item : LevelManager.visible_components) {
             if (item.intersects(mouse_x, mouse_y)) {
-                putItem(item);
+                putPotion(item);
                 return;
             }
         }
         inventory.item_on_hand.onClick();
     }
 
-    private void putItem(Item item) {
-        boolean isPut = inventory.inventory.addItem(item);
+    private void putPotion(Item item) {
+        boolean isPut;
+
         if (item instanceof Potion) {
             isPut = inventory.addPotionToBar((Potion) item);
+        } else {
+            isPut = inventory.inventory.addItem(item);
         }
 
         if (isPut) {

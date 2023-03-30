@@ -1,8 +1,11 @@
 package com.samsung.game.items;
 
+import com.samsung.game.items.Item;
+
 import java.util.ArrayList;
 
 public class Inventory<T extends Item> {
+    //ячейка в инвентаре начинается с 1, 1, а не с 0, 0.
     private Item[][] container;
 
     public Inventory(int cols, int rows) {
@@ -11,7 +14,7 @@ public class Inventory<T extends Item> {
 
     public boolean addItem(T item) {
         for (int i = 1; i <= container.length; i++) {
-            for (int j = 1; j < container[0].length; j++) {
+            for (int j = 1; j <= container[0].length; j++) {
                 if (this.addItem(item, i, j)) {
                     return true;
                 }
@@ -26,6 +29,7 @@ public class Inventory<T extends Item> {
             return false;
         }
         container[col_num][row_num] = item;
+        item.setPosInInventory(col_num, row_num);
         return true;
     }
 
@@ -33,8 +37,29 @@ public class Inventory<T extends Item> {
         return container[0].length;
     }
 
+    public int cols() {
+        return container.length;
+    }
+
     public T getItem(int col, int row) {
-        return (T) container[col][row];
+        return (T) container[col - 1][row - 1];
+    }
+
+    public void remove(int col, int row) {
+        container[col - 1][row - 1] = null;
+    }
+
+    public boolean swap(int col1, int row1, int col2, int row2) {
+        col2--; col1--;
+        row1--; row2--;
+
+        if (container[col1][row1] != null) {
+            Item temp = container[col1][row1];
+            container[col1][row1] = container[col2][row2];
+            container[col2][col2] = temp;
+            return true;
+        }
+        return false;
     }
 
     @Override

@@ -9,7 +9,6 @@ import com.samsung.game.items.Item;
 import com.samsung.game.items.armor.Armor;
 import com.samsung.game.items.armor.Helmet;
 import com.samsung.game.items.potions.Potion;
-import com.samsung.game.map.Tile;
 
 public class PlayerInventory {
     private Player player;
@@ -22,8 +21,8 @@ public class PlayerInventory {
 
     PlayerInventory(Player player) {
         this.player = player;
-        inventory = new Inventory<>(4, 4);
-        potion_bar = new Inventory<>(1, 6);
+        inventory = new Inventory<>(4, 6);
+        potion_bar = new Inventory<>(1, 4);
     }
 
     public void setHelmet(Helmet helmet) {

@@ -12,7 +12,6 @@ public abstract class Weapon extends Item {
     private int damage_min;
     private int damage_max;
 
-
     public Weapon() {
     }
 

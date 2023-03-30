@@ -1,10 +1,10 @@
 package com.samsung.game.ui;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.samsung.game.items.Inventory;
 import com.samsung.game.items.Item;
 
-public class UIItemBar extends UIComponent {
+public class UIItemBar extends Group {
     Inventory<? extends Item> items;
     UICell[] cells;
     int indent;
@@ -18,31 +18,16 @@ public class UIItemBar extends UIComponent {
         this.items = items;
         cells = new UICell[items.rows()];
 
-        for (int i = 0; i < cells.length; i++) {
-            cells[i] = new UICell();
+        for (int i = 0; i < items.rows(); i++) {
             Item item = items.getItem(0, i);
+            if (item != null)
+                item.findUIView(Item.UILocation.IN_INVENTORY).visible = true;
 
-            if (item != null) {
-                cells[i].addTexture(item.getIconTexture());
-            }
+            cells[i] = new UICell(items);
+            cells[i].setCell(0, i);
+            addActor(cells[i]);
         }
-    }
 
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        super.draw(batch, parentAlpha);
-
-        float x = getX();
-        float y = getY();
-
-        for (UICell cell : cells) {
-            cell.setX(x);
-            cell.setY(y);
-
-            cell.draw(batch, parentAlpha);
-
-            x += indent + cell.width;
-        }
     }
 
     @Override
@@ -55,13 +40,17 @@ public class UIItemBar extends UIComponent {
         return cells[0].height;
     }
 
-    @Override
     public void update() {
-        for (int i = 0; i < cells.length; i++) {
-            Item item = items.getItem(0, i);
-            if (item != null) {
-                cells[i].addTexture(item.getIconTexture());
-            }
+        float x = getX();
+        float y = getY();
+
+        for (int i = 0; i < getChildren().size; i++) {
+            UICell cell = (UICell) getChildren().get(i);
+
+            cell.setX(x);
+            cell.setY(y);
+
+            x += cell.getWidth() + indent;
         }
     }
 }

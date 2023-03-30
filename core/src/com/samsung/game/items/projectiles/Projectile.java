@@ -1,12 +1,12 @@
-package com.samsung.game.items.weapon;
+package com.samsung.game.items.projectiles;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.samsung.game.engine.Collideable;
 import com.samsung.game.engine.Damage;
-import com.samsung.game.engine.Drawable;
 import com.samsung.game.entities.Entity;
+import com.samsung.game.items.weapon.Weapon;
 
 import java.util.HashSet;
 

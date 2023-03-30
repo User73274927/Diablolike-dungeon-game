@@ -1,8 +1,8 @@
 package com.samsung.game.items.weapon;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.samsung.game.entities.Entity;
+import com.samsung.game.items.projectiles.Projectile;
 
 public class Fireball extends Projectile {
     private Texture texture;
