@@ -3,6 +3,7 @@ package com.samsung.game.entities;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.samsung.game.engine.ItemGenerator;
 import com.samsung.game.engine.LevelManager;
 import com.samsung.game.items.Item;
 import com.samsung.game.items.potions.Potion;
@@ -11,13 +12,16 @@ public abstract class Enemy extends Entity {
     private String name;
     private Item drop_item;
     private boolean isDead;
+    private ItemGenerator item_generator;
+
 
     public Enemy(float x, float y) {
         super(x, y);
         current_frame = new TextureRegion(new Texture("sprites/player-example1.png"));
+        item_generator = new ItemGenerator();
         Potion potion = new Potion() {
             @Override
-            public void onClick() {
+            public void onTouch(float screen_x, float screen_y) {
                 owner.addHealth(30);
             }
         };

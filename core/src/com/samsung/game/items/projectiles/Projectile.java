@@ -38,9 +38,11 @@ public abstract class Projectile extends Weapon implements Collideable, Damage {
                 continue;
             }
             if (overlaps(entity)) {
-                acceptDamage(entity);
-                destroyed = true;
-                break;
+                if (isHit()) {
+                    acceptDamage(entity);
+                    destroyed = true;
+                    break;
+                }
             }
         }
 

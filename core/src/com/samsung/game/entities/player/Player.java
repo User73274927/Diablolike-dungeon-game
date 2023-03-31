@@ -96,7 +96,7 @@ public class Player extends Entity {
                 return;
             }
         }
-        inventory.item_on_hand.onClick();
+        inventory.item_on_hand.onTouch(mouse_x, mouse_y);
     }
 
     private void putPotion(Item item) {

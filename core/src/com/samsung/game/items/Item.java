@@ -122,23 +122,6 @@ public abstract class Item implements Drawable, Collideable {
         UIView() {
             icon_pos = new Vector2();
             icon_width = icon_height = Tile.SIZE;
-
-            addListener(new ClickListener() {
-                boolean dragged = true;
-
-                @Override
-                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                    Gdx.app.log("input", "item touch up");
-                    setIconX(x);
-                    setIconY(y);
-                }
-
-                @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    dragged = false;
-                    return false;
-                }
-            });
         }
 
         @Override

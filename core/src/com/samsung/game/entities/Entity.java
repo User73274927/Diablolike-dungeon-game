@@ -32,6 +32,7 @@ public abstract class Entity extends Thread implements Collideable {
 
     protected Direction direction;
     protected Integer health;
+    protected Integer level;
     private float speed;
 
 

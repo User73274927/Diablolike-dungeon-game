@@ -1,6 +1,5 @@
 package com.samsung.game.ui;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -100,7 +99,7 @@ public class UIInventory extends Group {
                     Item item = inventory.getItem(col, row);
 
                     if (item != null & item instanceof Equipable<?>) {
-                        ((Equipable<?>) item).onClick();
+                        ((Equipable<?>) item).onTouch(x, y);
                         inventory.remove(col, row);
                     }
                 }

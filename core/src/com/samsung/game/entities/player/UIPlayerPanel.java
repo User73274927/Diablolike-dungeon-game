@@ -5,14 +5,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.samsung.game.items.Item;
 import com.samsung.game.items.armor.Helmet;
 import com.samsung.game.map.Tile;
 import com.samsung.game.ui.PxNumber;
 import com.samsung.game.ui.UIInventory;
-import com.samsung.game.ui.UIItemBar;
-import com.samsung.game.ui.UIButton;
 
 public class UIPlayerPanel extends Group {
     private Player player;

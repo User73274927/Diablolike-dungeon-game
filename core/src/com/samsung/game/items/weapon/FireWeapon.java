@@ -3,24 +3,30 @@ package com.samsung.game.items.weapon;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Plane;
+import com.badlogic.gdx.math.Vector2;
 import com.samsung.game.engine.ProjectileManager;
 import com.samsung.game.entities.Entity;
+import com.samsung.game.entities.player.Player;
 import com.samsung.game.items.Equipable;
 import com.samsung.game.items.projectiles.Projectile;
 
 public class FireWeapon extends Weapon implements Equipable<Entity> {
-    private Entity owner;
     private ProjectileManager<M762> handler;
     private float time;
+    public float angle;
+
 
     public FireWeapon() {
         super();
         handler = new ProjectileManager<>();
     }
 
-    public void shoot() {
+    public void shoot(float angle) {
         if (time >= 0.1) {
-            handler.add(new M762(owner, 10, 0));
+            M762 m762 = new M762(owner, 10, angle);
+            m762.hit_chance = hit_chance;
+            handler.add(m762);
             time = 0;
         }
     }
@@ -36,22 +42,6 @@ public class FireWeapon extends Weapon implements Equipable<Entity> {
     }
 
     @Override
-    public float getX() {
-        if (owner == null) {
-            return 0;
-        }
-        return owner.getCenterX();
-    }
-
-    @Override
-    public float getY() {
-        if (owner == null) {
-            return 0;
-        }
-        return owner.getCenterY();
-    }
-
-    @Override
     public Entity getOwner() {
         return owner;
     }
@@ -62,10 +52,16 @@ public class FireWeapon extends Weapon implements Equipable<Entity> {
     }
 
     @Override
-    public void onClick() {
-        shoot();
-    }
+    public final void onTouch(float screen_x, float screen_y) {
+        float x = getX() - screen_x, y = getY() - screen_y;
 
+        shoot((float) Math.atan2(-y, -x));
+        if (owner.getClass() == Player.class) {
+            Gdx.app.log("x", x + "");
+            Gdx.app.log("y", y + "");
+            Gdx.app.log("angle",  Math.atan2(-y, -x) + "");
+        }
+    }
 
     class M762 extends Projectile {
         public M762(Entity owner, float speed, float angle) {

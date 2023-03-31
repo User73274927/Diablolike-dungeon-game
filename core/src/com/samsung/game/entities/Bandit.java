@@ -14,13 +14,14 @@ public class Bandit extends Enemy {
         setView(new BanditView());
         f = new FireWeapon();
         f.setOwner(this);
+        f.hit_chance = 0.2;
     }
 
     public class BanditView extends EnemyView {
         @Override
         public void draw(Batch batch) {
             super.draw(batch);
-            f.shoot();
+            f.shoot(0);
             f.draw(batch);
         }
     }

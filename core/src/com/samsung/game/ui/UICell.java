@@ -30,7 +30,7 @@ public class UICell extends UIComponent {
                 Item item = items.getItem(col, row);
 
                 if (item != null & item instanceof Equipable<?>) {
-                    ((Equipable<?>) item).onClick();
+                    ((Equipable<?>) item).onTouch(x, y);
                     items.remove(col, row);
                 }
 

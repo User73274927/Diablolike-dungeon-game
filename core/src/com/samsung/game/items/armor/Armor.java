@@ -24,5 +24,5 @@ public class Armor extends Item implements Equipable<Entity> {
     }
 
     @Override
-    public void onClick() {}
+    public void onTouch(float screen_x, float screen_y) {}
 }
