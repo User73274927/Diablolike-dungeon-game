@@ -2,38 +2,42 @@ package com.samsung.game.ui;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.samsung.game.items.Equipable;
+import com.samsung.game.items.InventoryController;
 import com.samsung.game.items.Inventory;
 import com.samsung.game.items.Item;
 import com.samsung.game.map.Tile;
 
+import java.lang.reflect.Array;
+
 public class UIInventory extends Group {
-    public boolean isOpened;
-    private Slot[][] slots;
     private Inventory<? extends Item> inventory;
+    private InventoryController<? extends Item> controller;
+    private Slot[][] slots;
+    public boolean isOpened;
     public int indent;
 
-    public UIInventory(Inventory<? extends Item> inventory) {
-        this.inventory = inventory;
-        slots = new Slot[inventory.cols()][inventory.rows()];
-        isOpened = true;
+    public UIInventory(InventoryController<? extends Item> controller) {
+        this.controller = controller;
+        this.inventory = controller.getInventory();
         init();
     }
 
     private void init() {
+        slots = (Slot[][]) Array.newInstance(Slot.class, inventory.cols(), inventory.rows());
+        isOpened = false;
+
         for (int i = 0; i < inventory.cols(); i++) {
             for (int j = 0; j < inventory.rows(); j++) {
-                Item item = inventory.getItem(i + 1, j + 1);
-
-                if (item != null) {
+                inventory.getItem(i + 1, j + 1).ifPresent(item -> {
                     item.findUIView(Item.UILocation.IN_INVENTORY).visible = true;
-                }
+                });
 
-                slots[i][j] = new Slot();
-                Slot slot = slots[i][j];
+                Slot slot = slots[i][j] = new Slot();
                 slot.setInventoryCell(i + 1, j + 1);
                 addActor(slot);
             }
@@ -42,29 +46,40 @@ public class UIInventory extends Group {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        //batch.draw(new Texture("sprites/player-example1.png"), getX(), getY(), getWidth(), getHeight());
         super.draw(batch, parentAlpha);
     }
 
     public void update() {
-        final float x = getX();
-        final float y = getY() + getHeight();
+        final float x = 0;
+        final float y = getHeight();
 
         float lx = x;
-        float ly = y;
+        float ly = y - slots[0][0].height;
 
         for (int i = 0; i < inventory.cols(); i++) {
-            ly -= slots[i][0].height + indent;
-
             for (int j = 0; j < inventory.rows(); j++) {
                 Slot slot = slots[i][j];
 
                 slot.setX(lx);
                 slot.setY(ly);
 
-                lx += slot.getWidth() + indent;
+                lx += slot.width + indent;
             }
+            ly -= slots[i][0].height + indent;
             lx = x;
         }
+    }
+
+    public void setController(InventoryController<? extends Item> controller) {
+        this.controller = controller;
+        this.inventory = controller.getInventory();
+        init();
+    }
+
+    public void setIsOpened(boolean isOpened) {
+        this.isOpened = isOpened;
+        setVisible(isOpened);
     }
 
     @Override
@@ -77,30 +92,27 @@ public class UIInventory extends Group {
         return (slots[0][0].height + indent) * slots.length - indent;
     }
 
-    public void setIsOpened(boolean isOpened) {
-        this.isOpened = isOpened;
-        setVisible(isOpened);
-    }
-
     public class Slot extends UIComponent {
-        private Texture frame;
+        private BitmapFont font;
+        private boolean font_visible = false;
+        private int col = -1, row = -1;
+        public Texture frame;
         public int width, height;
-        private int col, row;
 
         public Slot(int width, int height) {
             frame = new Texture("sprites/player-example1.png");
+            font = new BitmapFont();
             this.width = width;
             this.height = height;
-            setBounds(getX(), getY(), width, height);
-
-            addListener(new ClickListener() {
+            setSize(width, height);
+            addListener(new ActorGestureListener() {
                 @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    Item item = inventory.getItem(col, row);
-
-                    if (item != null & item instanceof Equipable<?>) {
-                        ((Equipable<?>) item).onTouch(x, y);
-                        inventory.remove(col, row);
+                public void tap(InputEvent event, float x, float y, int count, int button) {
+                    if (count == 1) {
+                        controller.onTouch(col, row);
+                    }
+                    if (count == 2) {
+                        controller.onDoubleTouch(col, row);
                     }
                 }
             });
@@ -113,20 +125,28 @@ public class UIInventory extends Group {
         @Override
         public void draw(Batch batch, float parentAlpha) {
             super.draw(batch, parentAlpha);
-            batch.draw(frame, getX(), getY(), width, height);
-            if (inventory.getItem(col, row) != null) {
-                batch.draw(inventory.getItem(col, row).getIconTexture(), getX(), getY(), getWidth(), getHeight());
-            }
-        }
+            batch.draw(frame, getX(), getY(), getWidth(), getHeight());
 
-        @Override
-        public void update() {
-
+            inventory.getItem(col, row).ifPresent(item -> {
+                if (col != -1 && row != -1) {
+                    batch.draw(item.getIconTexture(), getX(), getY(), getWidth(), getHeight());
+                }
+            });
         }
 
         public void setInventoryCell(int col, int row) {
             this.col = col;
             this.row = row;
         }
+
+        @Override
+        public float getWidth() {
+            return width;
+        }
+
+        public float getHeight() {
+            return height;
+        }
     }
+
 }

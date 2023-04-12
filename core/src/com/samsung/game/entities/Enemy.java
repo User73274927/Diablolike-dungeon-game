@@ -3,10 +3,15 @@ package com.samsung.game.entities;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.samsung.game.engine.ItemGenerator;
+import com.samsung.game.engine.Level;
 import com.samsung.game.engine.LevelManager;
+import com.samsung.game.entities.player.PlayerController;
 import com.samsung.game.items.Item;
 import com.samsung.game.items.potions.Potion;
+import com.samsung.game.map.Map;
 
 public abstract class Enemy extends Entity {
     private String name;
@@ -14,33 +19,35 @@ public abstract class Enemy extends Entity {
     private boolean isDead;
     private ItemGenerator item_generator;
 
-
-    public Enemy(float x, float y) {
-        super(x, y);
+    public Enemy(Map map, float x, float y) {
+        super(map, x, y);
         current_frame = new TextureRegion(new Texture("sprites/player-example1.png"));
         item_generator = new ItemGenerator();
-        Potion potion = new Potion() {
-            @Override
-            public void onTouch(float screen_x, float screen_y) {
-                owner.addHealth(30);
-            }
-        };
-        potion.setOwner(this);
+        Potion potion = item_generator.generatePotion();
         drop_item = potion;
 
         isDead = false;
         pos.x = x;
         pos.y = y;
 
+        addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                System.out.println("dddddd");
+                PlayerController.current_entity = getEntity();
+            }
+        });
         onSpawn();
     }
 
-    public class EnemyView extends View {
-        @Override
-        public void draw(Batch batch) {
-            if (!isDead) {
-                batch.draw(current_frame, getX(), getY(), getWidth(), getHeight());
-            }
+    private Entity getEntity() {
+        return this;
+    }
+
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        if (!isDead) {
+            batch.draw(current_frame, getX(), getY(), getWidth(), getHeight());
         }
     }
 
@@ -54,10 +61,10 @@ public abstract class Enemy extends Entity {
 
     @Override
     public void onDie() {
-        LevelManager.visible_components.add(drop_item);
+        Level.visible_components.add(drop_item);
         drop_item.drop(getX(), getY());
         isDead = true;
-        Entity.remove(this);
+        LevelManager.current_level.removeEntity(this);
     }
 
 }

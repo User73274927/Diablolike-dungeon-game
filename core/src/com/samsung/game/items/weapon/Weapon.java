@@ -1,8 +1,7 @@
 package com.samsung.game.items.weapon;
 
-import com.samsung.game.engine.Damage;
+import com.badlogic.gdx.Gdx;
 import com.samsung.game.entities.Entity;
-import com.samsung.game.items.Equipable;
 import com.samsung.game.items.Item;
 
 import java.util.Random;
@@ -23,12 +22,8 @@ public abstract class Weapon extends Item {
     }
 
     public void setDamageBounds(int min, int max) {
-        if (min <= max) {
-            this.damage_min = min;
-            this.damage_max = max;
-        } else {
-            System.out.println(getClass().getName() + ": incorrect damage arguments");
-        }
+        this.damage_min = Math.min(min, max);
+        this.damage_max = Math.max(min, max);
     }
 
     public void setRequireLevel(int level) {
@@ -42,13 +37,24 @@ public abstract class Weapon extends Item {
     }
 
     public boolean isHit() {
-        return hit_rand.nextDouble() <= hit_chance;
+        double num = hit_rand.nextDouble();
+        System.out.println(num);
+        return num >= hit_chance;
+    }
+
+    public int getMinDamage() {
+        return damage_min;
+    }
+
+    public int getMaxDamage() {
+        return damage_max;
     }
 
     @Override
     public float getX() {
         if (owner == null) {
-            return 0;
+            visible = false;
+            return -1;
         }
         return owner.getCenterX();
     }
@@ -56,17 +62,16 @@ public abstract class Weapon extends Item {
     @Override
     public float getY() {
         if (owner == null) {
-            return 0;
+            visible = false;
+            return -1;
         }
         return owner.getCenterY();
     }
 
-    public abstract Entity getOwner();
-
     @Override
-    public String toString() {
+    public String info() {
         return "damage: " + damage_min + "-" + damage_max + " \n" +
-                "required level: " + require_level +
-                "hit chance (%): " + hit_chance * 100;
+                "require level: " + require_level + "\n" +
+                "hit chance: " + (int) (hit_chance * 100) + "\n";
     }
 }

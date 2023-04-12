@@ -1,70 +1,74 @@
 package com.samsung.game.entities.player;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import com.samsung.game.engine.Level;
 import com.samsung.game.engine.LevelManager;
 import com.samsung.game.engine.ProjectileManager;
 import com.samsung.game.entities.Entity;
 import com.samsung.game.items.Item;
+import com.samsung.game.items.armor.Armour;
 import com.samsung.game.items.armor.Helmet;
 import com.samsung.game.items.potions.Potion;
 import com.samsung.game.items.weapon.FireWeapon;
-import com.samsung.game.items.weapon.Fireball;
-import com.samsung.game.items.armor.Armor;
+import com.samsung.game.items.projectiles.Fireball;
 import com.samsung.game.map.Map;
-import com.samsung.game.map.Tile;
 
 import java.util.HashMap;
 
 public class Player extends Entity {
+    public static int MAX_STAMINA = 50;
+
     private TextureRegion[][] knight_frames;
     private HashMap<String, Animation<TextureRegion>> walkAnimationDict;
     private Animation<TextureRegion> current_animation;
-    private KnightView view;
 
     private TextureRegion current_frame;
     private ProjectileManager<Fireball> projectile_handler;
-
     private int speed;
-    private Map map;
+    Sound shoot_sound;
 
     PlayerInventory inventory;
     Integer stamina;
     Integer level;
 
-    public class KnightView extends View {
-        @Override
-        public void draw(Batch batch) {
-            batch.draw(current_frame, pos.x, pos.y,
-                    getWidth(), getHeight()
-            );
-            inventory.draw(batch);
-        }
 
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        batch.draw(current_frame, getX(), getY(),
+                getWidth(), getHeight()
+        );
+        if (inventory.armor != null) {
+            inventory.armor.draw(batch);
+        }
+        inventory.draw(batch);
     }
 
     public Player(Map map) {
-        super(30, 30);
-        this.map = map;
+        super(map, 30, 30);
         inventory = new PlayerInventory(this);
-        view = new KnightView();
-        setView(view);
-
         onSpawn();
-        start();
     }
 
     @Override
     public void onSpawn() {
         final Texture knight_asset = new Texture("sprites/player-example1.png");
+        shoot_sound = Gdx.audio.newSound(Gdx.files.internal("shoot-example1.mp3"));
         current_frame = new TextureRegion(knight_asset);
         projectile_handler = new ProjectileManager<>();
 
-        inventory.setHelmet(new Helmet());
-        inventory.setArmor(new Armor());
+        inventory.setArmour(new Armour(Armour.Type.Iron));
+        inventory.setHelmet(new Helmet(Helmet.Type.Iron));
+
+        inventory.main_inventory.addItem(new Armour(Armour.Type.Leather));
+        inventory.main_inventory.addItem(new Armour(Armour.Type.Iron));
+        inventory.main_inventory.addItem(new Armour(Armour.Type.Diamond));
+        inventory.main_inventory.addItem(new FireWeapon());
         inventory.setItemOnHand(new FireWeapon());
 
 //        walkAnimationDict = new HashMap<>();
@@ -79,24 +83,27 @@ public class Player extends Entity {
 //
 //        current_animation = walkAnimationDict.get("right");
 //        current_frame = current_animation.getKeyFrame(time);
-        speed = 5;
         health = Entity.MAX_HEALTH;
+        stamina = Player.MAX_STAMINA;
+        level = 1;
+        speed = 5;
     }
 
     @Override
     public void update() {
         move();
-        detectCollision(map);
+        detectCollision();
     }
 
     public void updateClick(float mouse_x, float mouse_y) {
-        for (Item item : LevelManager.visible_components) {
-            if (item.intersects(mouse_x, mouse_y)) {
+        for (Item item : Level.visible_components) {
+            if (item.intersects(mouse_x, mouse_y) ) {
                 putPotion(item);
                 return;
             }
         }
         inventory.item_on_hand.onTouch(mouse_x, mouse_y);
+        shoot_sound.play(1f);
     }
 
     private void putPotion(Item item) {
@@ -105,22 +112,12 @@ public class Player extends Entity {
         if (item instanceof Potion) {
             isPut = inventory.addPotionToBar((Potion) item);
         } else {
-            isPut = inventory.inventory.addItem(item);
+            isPut = inventory.main_inventory.addItem(item);
         }
 
         if (isPut) {
-            LevelManager.visible_components.remove(item);
+            Level.visible_components.remove(item);
         }
-    }
-
-    @Override
-    public float getX() {
-        return pos.x;
-    }
-
-    @Override
-    public float getY() {
-        return pos.y;
     }
 
     private void move() {
@@ -140,36 +137,21 @@ public class Player extends Entity {
         }
     }
 
+    @Override
+    public void onDie() {
+        LevelManager.current_level.removeEntity(this);
+    }
+
+    public void addStamina(Integer points) {
+        stamina = Math.min(MAX_STAMINA, stamina + points);
+    }
+
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
 
-    @Override
-    public void onDie() {
-        Entity.remove(this);
-    }
-
-    @Override
-    public KnightView getView() {
-        return view;
-    }
-
-    @Override
-    public int getWidth() {
-        return Tile.SIZE;
-    }
-
-    @Override
-    public int getHeight() {
-        return Tile.SIZE;
-    }
-
     public int getStamina() {
         return stamina;
-    }
-
-    public PlayerInventory getInventory() {
-        return inventory;
     }
 
 }

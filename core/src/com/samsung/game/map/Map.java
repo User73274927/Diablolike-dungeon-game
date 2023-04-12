@@ -3,17 +3,18 @@ package com.samsung.game.map;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.samsung.game.engine.Drawable;
 import com.samsung.game.utils.TestAssets;
 
 public class Map implements Drawable {
      private Tile[][] tile_map;
      private Texture wall_tx;
-     private Vector2 player_pos;
+     public final World world;
 
      public Map() {
          wall_tx = new Texture("tiles/wall-example1.png");
-         player_pos = new Vector2();
+         world = new World(new Vector2(0, 0), true);
      }
 
      public void load() {
@@ -24,8 +25,8 @@ public class Map implements Drawable {
                for (int j = 0; j < char_map[0].length; j++) {
                     if (char_map[i][j] == TestAssets.WALL) {
                          Wall wall = new Wall(wall_tx);
-                         wall.x = wall.getWidth() * j;
-                         wall.y = wall.getHeight() * f;
+                         wall.x = (int) (wall.getWidth() * j);
+                         wall.y = (int) (wall.getHeight() * f);
                          tile_map[i][j] = wall;
                     }
                }

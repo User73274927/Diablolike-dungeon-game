@@ -1,13 +1,11 @@
 package com.samsung.game.items;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.samsung.game.engine.Collideable;
 import com.samsung.game.engine.Drawable;
+import com.samsung.game.entities.player.Player;
 import com.samsung.game.map.Tile;
 import com.samsung.game.ui.UIComponent;
 import com.samsung.game.utils.GameUtils;
@@ -15,16 +13,16 @@ import com.samsung.game.utils.GameUtils;
 import java.util.HashMap;
 
 public abstract class Item implements Drawable, Collideable {
+    protected String name;
     protected Texture texture;
     private final HashMap<String, UIView> ui_views;
 
     protected int height;
     protected int width;
-    protected Vector2 pos;
+    protected float x, y;
 
-    public boolean item_visible;
-    //Расположение предмета в инвентаре, если предмет на земле то значения будут -1
-    private int col, row;
+    public boolean isDestroy;
+    public boolean visible;
     protected Texture icon_texture;
 
     //@Deprecated
@@ -38,17 +36,20 @@ public abstract class Item implements Drawable, Collideable {
 
     public Item() {
         ui_views = new HashMap<>();
-        pos = new Vector2();
+        texture = icon_texture = new Texture("sprites/unknown.png");
         createUIView(UILocation.IN_INVENTORY);
         createUIView(UILocation.ON_SCREEN);
-        col = row = -1;
+        isDestroy = false;
     }
 
     public void drop(float x, float y) {
-        item_visible = true;
-        this.pos.x = x;
-        this.pos.y = y;
-        col = row = -1;
+        visible = true;
+        this.x = x;
+        this.y = y;
+    }
+
+    public void drop(Player player) {
+        this.drop(player.getCenterX(), player.getCenterY());
     }
 
     public Texture getIconTexture() {
@@ -74,47 +75,42 @@ public abstract class Item implements Drawable, Collideable {
 
     @Override
     public void draw(Batch batch) {
-        if (item_visible) {
+        if (visible) {
             batch.draw(texture, getX(), getY(), width, height);
         }
     }
 
-    public void setPosInInventory(int row, int col) {
-        if (row > 0 && col > 0) {
-            this.row = row;
-            this.col = col;
-        }
-    }
-
-    public int getCol() {
-        return col;
-    }
-
-    public int getRow() {
-        return row;
+    public String getItemName() {
+        return name;
     }
 
     @Override
     public float getX() {
-        return pos.x;
+        return x;
     }
 
     @Override
     public float getY() {
-        return pos.y;
+        return y;
     }
 
     @Override
-    public int getHeight() {
+    public float getHeight() {
         return height;
     }
 
     @Override
-    public int getWidth() {
+    public float getWidth() {
         return width;
     }
 
+    @Override
+    public boolean intersects(float x, float y) {
+        return Collideable.super.intersects(x, y) && visible;
+    }
+
     public class UIView extends UIComponent {
+
         private Vector2 icon_pos;
         private int icon_width, icon_height;
         public boolean visible;
@@ -148,5 +144,10 @@ public abstract class Item implements Drawable, Collideable {
         public float getY() {
             return icon_pos.y;
         }
+
+    }
+
+    public String info() {
+        return "-";
     }
 }

@@ -5,24 +5,23 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.samsung.game.engine.Collideable;
 import com.samsung.game.engine.Damage;
+import com.samsung.game.engine.LevelManager;
 import com.samsung.game.entities.Entity;
 import com.samsung.game.items.weapon.Weapon;
 
 import java.util.HashSet;
 
 public abstract class Projectile extends Weapon implements Collideable, Damage {
+    private boolean invisible;
     public boolean destroyed;
     public Texture texture;
     private Entity owner;
-    private float angle;
-    private float speed;
+    public float angle;
+    public float velocity;
     private float x, y;
 
-    public Projectile(Entity owner, float speed, float angle) {
-        super();
+    public Projectile(Entity owner) {
         this.owner = owner;
-        this.angle = angle;
-        this.speed = speed;
         this.x = owner.getCenterX();
         this.y = owner.getCenterY();
         destroyed = false;
@@ -30,11 +29,16 @@ public abstract class Projectile extends Weapon implements Collideable, Damage {
     }
 
     public void update() {
-        x += speed * Math.cos(angle);
-        y += speed * Math.sin(angle);
+        x += velocity * Math.cos(angle);
+        y += velocity * Math.sin(angle);
 
-        for (Entity entity : Entity.all()) {
-            if (entity == getOwner()) {
+        //Условие если пуля коснулась цели, запрещающая засчитывать новые попадания
+        if (invisible) {
+            return;
+        }
+
+        for (Entity entity : LevelManager.current_level.allEntity) {
+            if (entity == owner) {
                 continue;
             }
             if (overlaps(entity)) {
@@ -43,6 +47,7 @@ public abstract class Projectile extends Weapon implements Collideable, Damage {
                     destroyed = true;
                     break;
                 }
+                invisible = true;
             }
         }
 
@@ -56,15 +61,6 @@ public abstract class Projectile extends Weapon implements Collideable, Damage {
         batch.draw(texture, getX(), getY(), getWidth(), getHeight());
     }
 
-    public void setAngle(float angle) {
-        this.angle = angle;
-    }
-
-    @Override
-    public Entity getOwner() {
-        return owner;
-    }
-
     @Override
     public float getX() {
         return x;
@@ -73,6 +69,11 @@ public abstract class Projectile extends Weapon implements Collideable, Damage {
     @Override
     public float getY() {
         return y;
+    }
+
+    @Override
+    public String info() {
+        return "";
     }
 
     //static members

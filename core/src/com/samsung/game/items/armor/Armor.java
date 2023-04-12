@@ -7,22 +7,41 @@ import com.samsung.game.items.Equipable;
 import com.samsung.game.items.Item;
 import com.samsung.game.map.Tile;
 
-public class Armor extends Item implements Equipable<Entity> {
+public abstract class Armor extends Item {
     private Entity owner;
+    public Integer protection;
 
     public Armor() {
         texture = new Texture("sprites/armor-example1.png");
-        setOwner(owner);
         icon_texture = texture;
         width = height = Tile.SIZE;
     }
 
     @Override
-    public void setOwner(Entity owner) {
-        this.owner = owner;
-        setItemSize(Tile.SIZE);
+    public float getX() {
+        if (owner == null) {
+            visible = false;
+            return -1;
+        }
+        return owner.getX();
     }
 
     @Override
-    public void onTouch(float screen_x, float screen_y) {}
+    public float getY() {
+        if (owner == null) {
+            visible = false;
+            return -1;
+        }
+        return owner.getY();
+    }
+
+    public void setOwner(Entity owner) {
+        this.owner = owner;
+        setItemSize((int) owner.getHeight());
+    }
+
+    @Override
+    public String info() {
+        return "protection: " + protection + "\n";
+    }
 }

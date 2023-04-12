@@ -4,21 +4,34 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.samsung.game.engine.Quest;
+import com.samsung.game.entities.Entity;
+import com.samsung.game.entities.Npc;
+import com.samsung.game.items.InventoryController;
+import com.samsung.game.items.Item;
 import com.samsung.game.map.Map;
+import com.samsung.game.ui.DescriptionPanel;
+import com.samsung.game.ui.DialogPanel;
 import com.samsung.game.ui.UIInventory;
 
+import java.util.Stack;
+
 public class PlayerController extends InputAdapter {
+    public static Entity current_entity;
     private Player player;
-    private UIPlayerPanel player_ui_panel;
+    private Stack<Quest> quest_list;
+    private PlayerHUD playerHUD;
     private Camera camera;
     private Vector3 touch_pos;
+
+    public final InventoryController<Item> itemInventoryController;
 
     public PlayerController(Map map) {
         touch_pos = new Vector3();
         player = new Player(map);
-        player_ui_panel = new UIPlayerPanel(player);
+        itemInventoryController = new InventoryController<>(player.inventory.main_inventory);
+        playerHUD = new PlayerHUD(this);
     }
 
     public void keyHandler() {
@@ -44,7 +57,7 @@ public class PlayerController extends InputAdapter {
             touch_pos.set(screenX, screenY, 0);
             camera.unproject(touch_pos);
             player.updateClick(touch_pos.x, touch_pos.y);
-            System.out.println(touch_pos.x + " " + touch_pos.y);
+            Gdx.app.log("mouse coords", touch_pos.x + " " + touch_pos.y);
         }
         return false;
     }
@@ -52,14 +65,23 @@ public class PlayerController extends InputAdapter {
     @Override
     public boolean keyUp(int keycode) {
         if (keycode == Input.Keys.E) {
-            UIInventory bar = player_ui_panel.main_inventory;
+            UIInventory bar = playerHUD.main_inventory;
+            DescriptionPanel list = playerHUD.item_info;
             bar.setIsOpened(!bar.isOpened);
+            list.setVisible(!list.isVisible());
         }
         return super.keyUp(keycode);
     }
 
-    public UIPlayerPanel getIUPanel() {
-        return player_ui_panel;
+    public void startTalk(Npc npc) {
+        DialogPanel dpn = playerHUD.dialogPanel;
+        npc.talk();
+        dpn.setDialogText(npc.getDialog());
+        dpn.setVisible(true);
+    }
+
+    public PlayerHUD getIUPanel() {
+        return playerHUD;
     }
 
     public Player getPlayer() {

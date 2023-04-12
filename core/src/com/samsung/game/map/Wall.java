@@ -13,12 +13,12 @@ public class Wall extends Tile implements Collideable {
     }
 
     @Override
-    public int getWidth() {
+    public float getWidth() {
         return (int) hitbox.width;
     }
 
     @Override
-    public int getHeight() {
+    public float getHeight() {
         return (int) hitbox.height;
     }
 

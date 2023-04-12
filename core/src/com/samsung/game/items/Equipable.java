@@ -1,6 +1,8 @@
 package com.samsung.game.items;
 
-public interface Equipable<T> {
-    public void setOwner(T owner);
+import com.samsung.game.entities.Entity;
+
+public interface Equipable<E extends Entity> {
+    public void setOwner(E owner);
     public void onTouch(float screen_x, float screen_y);
 }

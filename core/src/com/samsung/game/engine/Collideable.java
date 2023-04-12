@@ -1,8 +1,8 @@
 package com.samsung.game.engine;
 
 public interface Collideable {
-    public int getWidth();
-    public int getHeight();
+    public float getWidth();
+    public float getHeight();
     public float getX();
     public float getY();
 

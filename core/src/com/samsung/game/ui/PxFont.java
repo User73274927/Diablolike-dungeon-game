@@ -5,10 +5,9 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.samsung.game.engine.Drawable;
 import com.samsung.game.utils.GameUtils;
 
-public class PxNumber extends Actor {
+public class PxFont extends UIComponent {
     private static final int DIGIT_COUNT = 10;
     private static final int SIGH_COUNT = 5;
     private static final int NUM_WIDTH;
@@ -36,43 +35,31 @@ public class PxNumber extends Actor {
     }
 
     public Integer number;
-    private Vector2 pos;
     private int width, height;
 
-    public PxNumber(Integer number, int x, int y, int height) {
-        this.pos = new Vector2();
+    public PxFont(Integer number, int height) {
         this.width = (int) GameUtils.relatedFrom(
                 NUM_HEIGHT, NUM_WIDTH, height
         );
         this.number = number;
         this.height = height;
-        this.pos.add(x, y);
     }
 
     @Override
     public void draw(Batch batch, float n) {
         String str_num = "" + number;
-        int x = (int) pos.x;
+        int x = (int) getX();
 
         if (number < 0) {
-            batch.draw(numbers[0], pos.x, pos.y, width, height);
+            batch.draw(numbers[0], getX(), getY(), width, height);
             return;
         }
 
         for (char digit : str_num.toCharArray()) {
             TextureRegion digit_nm = numbers[Character.getNumericValue(digit)];
-            batch.draw(digit_nm, x, pos.y, width, height);
+            batch.draw(digit_nm, x, getY(), width, height);
             x += width + width / 5;
         }
     }
 
-    @Override
-    public float getX() {
-        return pos.x;
-    }
-
-    @Override
-    public float getY() {
-        return pos.y;
-    }
 }

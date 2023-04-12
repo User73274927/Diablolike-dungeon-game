@@ -6,22 +6,22 @@ import com.samsung.game.entities.Entity;
 import com.samsung.game.items.Equipable;
 import com.samsung.game.items.Inventory;
 import com.samsung.game.items.Item;
-import com.samsung.game.items.armor.Armor;
+import com.samsung.game.items.armor.Armour;
 import com.samsung.game.items.armor.Helmet;
 import com.samsung.game.items.potions.Potion;
 
 public class PlayerInventory {
     private Player player;
 
-    Inventory<Item> inventory;
-    Equipable<? super Entity> item_on_hand;
+    Inventory<Item> main_inventory;
+    Equipable<?> item_on_hand;
     Inventory<Potion> potion_bar;
     Item helmet;
-    Armor armor;
+    Armour armor;
 
     PlayerInventory(Player player) {
         this.player = player;
-        inventory = new Inventory<>(4, 6);
+        main_inventory = new Inventory<>(4, 6);
         potion_bar = new Inventory<>(1, 4);
     }
 
@@ -31,10 +31,11 @@ public class PlayerInventory {
         this.helmet.findUIView(Item.UILocation.IN_INVENTORY).visible = true;
     }
 
-    public void setArmor(Armor armor) {
+    public void setArmour(Armour armor) {
         armor.setOwner(player);
         this.armor = armor;
-        this.armor.findUIView(Item.UILocation.IN_INVENTORY).visible = true;
+        this.armor.findUIView(Item.UILocation.ON_SCREEN).visible = true;
+        armor.visible = true;
     }
 
     public void setItemOnHand(Equipable<? super Entity> item_on_hand) {
@@ -44,16 +45,16 @@ public class PlayerInventory {
 
     public boolean addPotionToBar(Potion potion) {
         boolean isPut = potion_bar.addItem(potion);
-        if (isPut) {
-            potion.setOwner(player);
-        }
         return isPut;
     }
 
     public void draw(Batch batch) {
-        if (item_on_hand instanceof Drawable) {
+        if (item_on_hand instanceof  Drawable) {
             ((Drawable) item_on_hand).draw(batch);
         }
     }
 
+    public Inventory<Item> getMain_inventory() {
+        return main_inventory;
+    }
 }
