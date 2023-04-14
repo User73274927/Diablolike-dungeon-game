@@ -1,16 +1,15 @@
 package com.samsung.game.entities;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.samsung.game.engine.LevelData;
 import com.samsung.game.items.weapon.FireWeapon;
-import com.samsung.game.map.Map;
-import com.samsung.game.map.Tile;
 
 public class Bandit extends Enemy {
     private FireWeapon f;
 
-    public Bandit(Map map, int x, int y) {
-        super(map, x, y);
-        f = new FireWeapon();
+    public Bandit(LevelData data, int x, int y) {
+        super(data, x, y);
+        f = new FireWeapon(data.allEntity);
         f.setOwner(this);
         f.hit_chance = 0.2;
     }

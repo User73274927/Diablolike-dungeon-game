@@ -5,21 +5,22 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.samsung.game.engine.Collideable;;
-import com.samsung.game.engine.LevelManager;
-import com.samsung.game.map.Map;
+import com.samsung.game.engine.Collideable;
+import com.samsung.game.engine.LevelData;
+import com.samsung.game.engine.gdx.ActorWrapper;
 import com.samsung.game.map.Tile;
 import com.samsung.game.map.Wall;
 
 import java.util.HashMap;
 import java.util.Set;
 
-public abstract class Entity extends Actor implements Collideable, Runnable {
+;
+
+public abstract class Entity extends ActorWrapper implements Collideable, Runnable {
     public static final int MAX_LEVEL = 100;
     public static final float MAX_SPEED = Tile.SIZE;
     public static final float MAX_RESISTANCE = 80;
-    public static int MAX_HEALTH = 100;
+    public int MAX_HEALTH = 100;
 
     private HashMap<String, Animation<TextureRegion>> animation;
     private Collideable current_collide_tile;
@@ -29,7 +30,7 @@ public abstract class Entity extends Actor implements Collideable, Runnable {
     protected Vector2 pos;
     protected Vector2 velocity;
     public final Thread update_thread;
-    public Map map;
+    protected final LevelData data;
 
     private int physical_resistance = 0;
     private int fire_resistance = 0;
@@ -47,11 +48,11 @@ public abstract class Entity extends Actor implements Collideable, Runnable {
         STOP, UP, DOWN, LEFT, RIGHT
     }
 
-    public Entity(Map map, float x, float y) {
+    public Entity(LevelData data, float x, float y) {
+        this.data = data;
         update_thread = new Thread(this);
         pos = new Vector2(x, y);
         velocity = new Vector2();
-        this.map = map;
 
         state = State.ACTIVE;
         direction = Direction.STOP;
@@ -59,8 +60,8 @@ public abstract class Entity extends Actor implements Collideable, Runnable {
         height = 20;
     }
 
-    public Entity(Map map) {
-        this(map, 0, 0);
+    public Entity(LevelData data) {
+        this(data, 0, 0);
     }
 
     @Override
@@ -83,8 +84,8 @@ public abstract class Entity extends Actor implements Collideable, Runnable {
     }
 
     public boolean checkCollision() {
-        Tile[][] tile_map = map.getTileMap();
-        Set<Entity> entitySet = LevelManager.current_level.allEntity;
+        Tile[][] tile_map = data.map.getTiledMap();
+        Set<Entity> entitySet = data.allEntity;
 
         for (Entity entity : entitySet) {
             if (entity == this) continue;
@@ -132,25 +133,12 @@ public abstract class Entity extends Actor implements Collideable, Runnable {
         }
     }
 
-    public void getDamage(int damage) {
+    public void putDamage(int damage) {
         health -= damage;
     }
 
-    public void stan(float time) {
-        state = State.STAN;
-    }
-
-
     public void addHealth(int points) {
         health = Math.min(MAX_HEALTH, health + points);
-    }
-
-    public float getCenterX() {
-        return pos.x + width / 2f;
-    }
-
-    public float getCenterY() {
-        return pos.y + height / 2f;
     }
 
     public boolean isEntityAlive() {
@@ -162,10 +150,6 @@ public abstract class Entity extends Actor implements Collideable, Runnable {
     }
     public Integer getHealth() {
         return health;
-    }
-
-    public Vector2 getPos() {
-        return pos;
     }
 
     @Override

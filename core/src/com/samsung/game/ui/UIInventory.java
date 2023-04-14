@@ -3,18 +3,17 @@ package com.samsung.game.ui;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.samsung.game.items.InventoryController;
+import com.samsung.game.engine.gdx.GroupWrapper;
 import com.samsung.game.items.Inventory;
+import com.samsung.game.items.InventoryController;
 import com.samsung.game.items.Item;
 import com.samsung.game.map.Tile;
 
 import java.lang.reflect.Array;
 
-public class UIInventory extends Group {
+public class UIInventory extends GroupWrapper {
     private Inventory<? extends Item> inventory;
     private InventoryController<? extends Item> controller;
     private Slot[][] slots;
@@ -100,7 +99,7 @@ public class UIInventory extends Group {
         public int width, height;
 
         public Slot(int width, int height) {
-            frame = new Texture("sprites/player-example1.png");
+            frame = new Texture("inventory-slot-frame.png");
             font = new BitmapFont();
             this.width = width;
             this.height = height;

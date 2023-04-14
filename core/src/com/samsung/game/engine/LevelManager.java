@@ -1,15 +1,13 @@
 package com.samsung.game.engine;
 
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.utils.viewport.FillViewport;
-import com.samsung.game.map.Map;
+import com.samsung.game.map.AsciiMap;
 
 public class LevelManager extends ScreenAdapter {
     public static Level current_level;
     private Level[] levels;
 
-    public LevelManager(Map map) {
+    public LevelManager(AsciiMap map) {
         levels = new Level[3];
         current_level = new Level(map);
     }

@@ -26,8 +26,6 @@ public class ViewPort extends Stage {
     }
 
     public void update() {
-        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        ScreenUtils.clear(Color.DARK_GRAY);
         getViewport().apply();
         camera.position.set(player.getCenterX(), player.getCenterY(), 0);
         camera.update();

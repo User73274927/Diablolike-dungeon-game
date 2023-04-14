@@ -7,8 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import com.samsung.game.engine.Level;
-import com.samsung.game.engine.LevelManager;
+import com.samsung.game.engine.LevelData;
 import com.samsung.game.engine.ProjectileManager;
 import com.samsung.game.entities.Entity;
 import com.samsung.game.items.Item;
@@ -17,12 +16,11 @@ import com.samsung.game.items.armor.Helmet;
 import com.samsung.game.items.potions.Potion;
 import com.samsung.game.items.weapon.FireWeapon;
 import com.samsung.game.items.projectiles.Fireball;
-import com.samsung.game.map.Map;
 
 import java.util.HashMap;
 
 public class Player extends Entity {
-    public static int MAX_STAMINA = 50;
+    public int MAX_STAMINA = 50;
 
     private TextureRegion[][] knight_frames;
     private HashMap<String, Animation<TextureRegion>> walkAnimationDict;
@@ -36,21 +34,10 @@ public class Player extends Entity {
     PlayerInventory inventory;
     Integer stamina;
     Integer level;
+    Integer exp;
 
-
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        batch.draw(current_frame, getX(), getY(),
-                getWidth(), getHeight()
-        );
-        if (inventory.armor != null) {
-            inventory.armor.draw(batch);
-        }
-        inventory.draw(batch);
-    }
-
-    public Player(Map map) {
-        super(map, 30, 30);
+    public Player(LevelData data) {
+        super(data, 30, 30);
         inventory = new PlayerInventory(this);
         onSpawn();
     }
@@ -68,8 +55,8 @@ public class Player extends Entity {
         inventory.main_inventory.addItem(new Armour(Armour.Type.Leather));
         inventory.main_inventory.addItem(new Armour(Armour.Type.Iron));
         inventory.main_inventory.addItem(new Armour(Armour.Type.Diamond));
-        inventory.main_inventory.addItem(new FireWeapon());
-        inventory.setItemOnHand(new FireWeapon());
+        inventory.main_inventory.addItem(new FireWeapon(data.allEntity));
+        inventory.setItemOnHand(new FireWeapon(data.allEntity));
 
 //        walkAnimationDict = new HashMap<>();
 //
@@ -83,10 +70,22 @@ public class Player extends Entity {
 //
 //        current_animation = walkAnimationDict.get("right");
 //        current_frame = current_animation.getKeyFrame(time);
-        health = Entity.MAX_HEALTH;
-        stamina = Player.MAX_STAMINA;
+        health = MAX_HEALTH;
+        stamina = MAX_STAMINA;
+        exp = 0;
         level = 1;
         speed = 5;
+    }
+
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        batch.draw(current_frame, getX(), getY(),
+                getWidth(), getHeight()
+        );
+        if (inventory.armor != null) {
+            inventory.armor.draw(batch);
+        }
+        inventory.draw(batch);
     }
 
     @Override
@@ -96,7 +95,7 @@ public class Player extends Entity {
     }
 
     public void updateClick(float mouse_x, float mouse_y) {
-        for (Item item : Level.visible_components) {
+        for (Item item : data.visible_components) {
             if (item.intersects(mouse_x, mouse_y) ) {
                 putPotion(item);
                 return;
@@ -116,7 +115,7 @@ public class Player extends Entity {
         }
 
         if (isPut) {
-            Level.visible_components.remove(item);
+            data.visible_components.remove(item);
         }
     }
 
@@ -139,7 +138,7 @@ public class Player extends Entity {
 
     @Override
     public void onDie() {
-        LevelManager.current_level.removeEntity(this);
+        data.removeEntity(this);
     }
 
     public void addStamina(Integer points) {

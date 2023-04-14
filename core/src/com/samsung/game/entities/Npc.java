@@ -2,10 +2,13 @@ package com.samsung.game.entities;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.samsung.game.engine.LevelData;
 import com.samsung.game.engine.Quest;
-import com.samsung.game.map.Map;
+import com.samsung.game.entities.player.Player;
+import com.samsung.game.entities.player.PlayerController;
+import com.samsung.game.entities.player.PlayerObserver;
 
-public class Npc extends Entity {
+public class Npc extends Entity implements PlayerObserver {
     // Система торговли и диалоги, будут добавлены позже
 
     // private final String random_reply_command = "#random";
@@ -36,8 +39,8 @@ public class Npc extends Entity {
 //        }
 //    }
 
-    public Npc(Map map, float x, float y) {
-        super(map, x, y);
+    public Npc(LevelData data, float x, float y) {
+        super(data, x, y);
         initDialogs();
 
         current_frame = new TextureRegion(new Texture("sprites/player-example1.png"));
@@ -47,7 +50,7 @@ public class Npc extends Entity {
 
     }
 
-    public void talk() {
+    public void talk(Player player) {
 
     }
 
@@ -77,4 +80,11 @@ public class Npc extends Entity {
     //невозможно убить
     @Override
     public void onDie() {}
+
+    @Override
+    public void doAction(PlayerController controller) {
+        controller.current_entity = this;
+        controller.startTalk(this);
+        System.out.println("Npc is talking with player");
+    }
 }

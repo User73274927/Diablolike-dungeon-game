@@ -1,9 +1,10 @@
-package com.samsung.game.ui;
+package com.samsung.game.ui.panels;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.samsung.game.items.Item;
+import com.samsung.game.ui.UIComponent;
 
 public class DescriptionPanel extends UIComponent {
     private Texture frame;

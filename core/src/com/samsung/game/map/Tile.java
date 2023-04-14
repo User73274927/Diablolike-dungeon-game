@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.samsung.game.engine.Drawable;
 
-public abstract class Tile implements Drawable {
+public class Tile implements Drawable {
     public static final int SIZE = 30;
     private Texture texture;
     public int x, y;
@@ -20,6 +20,16 @@ public abstract class Tile implements Drawable {
 
     public Texture getTexture() {
         return texture;
+    }
+
+    @Override
+    public float getX() {
+        return x;
+    }
+
+    @Override
+    public float getY() {
+        return y;
     }
 
 }

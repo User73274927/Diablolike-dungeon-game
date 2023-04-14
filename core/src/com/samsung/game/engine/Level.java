@@ -2,56 +2,46 @@ package com.samsung.game.engine;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FillViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.samsung.game.entities.Bandit;
-import com.samsung.game.entities.Entity;
 import com.samsung.game.entities.Npc;
 import com.samsung.game.entities.player.PlayerController;
-import com.samsung.game.items.Item;
-import com.samsung.game.map.Map;
-
-import java.util.HashSet;
-import java.util.Set;
+import com.samsung.game.map.AsciiMap;
 
 public class Level extends Stage {
-    public static Set<Item> visible_components = new HashSet<>();
-    public final Set<Entity> allEntity = new HashSet<>();
-
-    private Group entityHandler;
-    private Group itemHandler;
+    final LevelData data;
     final InputMultiplexer multiplexer;
     final PlayerController controller;
     final ViewPort port;
-    final Map map;
+    final AsciiMap map;
 
-    public Level(Map map) {
-        entityHandler = new Group();
-        addActor(entityHandler);
+    public Level(AsciiMap map) {
+        data = new LevelData(map);
+        addActor(data.entityHandler);
+        addActor(data.itemHandler);
 
         this.map = map;
         map.load();
         multiplexer = new InputMultiplexer();
-        this.controller = new PlayerController(map);
+        this.controller = new PlayerController(data);
         addActor(controller.getPlayer());
         port = new ViewPort(controller);
         setViewport(new FillViewport(600, 350, port.getCamera()));
 
-        Bandit bandit1 = new Bandit(map, 400, 200);
-        Bandit bandit2 = new Bandit(map, 150, 30);
-        Bandit bandit3 = new Bandit(map, 200, 100);
-        Bandit bandit4 = new Bandit(map, 300, 75);
-        Npc npc = new Npc(map, 50, 350);
-        addEntity(bandit1);
-        addEntity(bandit2);
-        addEntity(bandit3);
-        addEntity(bandit4);
-        addEntity(npc);
-        addEntity(controller.getPlayer());
-        controller.startTalk(npc);
+        Bandit bandit1 = new Bandit(data, 400, 200);
+        Bandit bandit2 = new Bandit(data, 150, 30);
+        Bandit bandit3 = new Bandit(data, 200, 100);
+        Bandit bandit4 = new Bandit(data, 300, 75);
+        Npc npc = new Npc(data, 50, 350);
+        data.addEntity(bandit1);
+        data.addEntity(bandit2);
+        data.addEntity(bandit3);
+        data.addEntity(bandit4);
+        data.addEntity(npc);
+        data.addEntity(controller.getPlayer());
 
         multiplexer.addProcessor(this);
         multiplexer.addProcessor(port);
@@ -60,45 +50,28 @@ public class Level extends Stage {
     }
 
     public void update() {
+        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        ScreenUtils.clear(0.04f, 0.31f, 0.40f, 1);
         port.act();
         act();
         getBatch().setProjectionMatrix(port.getCamera().combined);
         controller.keyHandler();
         getViewport().apply();
         port.update();
-        draw();
-        port.draw();
 
         getBatch().begin();
 
         map.draw(getBatch());
-        for (Drawable item : visible_components) {
+        for (Drawable item : data.visible_components) {
             item.draw(getBatch());
         }
         getBatch().end();
-    }
 
-    public void addEntity(Entity entity) {
-        allEntity.add(entity);
-        entityHandler.addActor(entity);
-        entity.update_thread.start();
-    }
-
-    public void removeEntity(Entity entity) {
-        entity.update_thread.interrupt();
-        entityHandler.removeActor(entity);
-        allEntity.remove(entity);
-    }
-
-    public void removeAllEntity() {
-        for (Entity entity : allEntity) {
-            entity.update_thread.interrupt();
-            entityHandler.removeActor(entity);
-        }
-        allEntity.clear();
+        draw();
+        port.draw();
     }
 
     public void dispose() {
-        removeAllEntity();
+        data.removeAllEntity();
     }
 }

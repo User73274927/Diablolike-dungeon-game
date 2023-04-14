@@ -1,10 +1,10 @@
 package com.samsung.game.engine;
 
-import com.samsung.game.items.Item;
-import com.samsung.game.items.armor.*;
-import com.samsung.game.items.potions.*;
-
-import java.util.function.Supplier;
+import com.samsung.game.items.armor.Armor;
+import com.samsung.game.items.armor.Helmet;
+import com.samsung.game.items.potions.HealthPotion;
+import com.samsung.game.items.potions.Potion;
+import com.samsung.game.items.potions.StaminaPotion;
 
 public class ItemGenerator {
     private Class<?>[] item_types = {

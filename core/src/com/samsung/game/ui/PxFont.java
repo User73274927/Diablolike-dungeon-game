@@ -3,11 +3,10 @@ package com.samsung.game.ui;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.samsung.game.engine.gdx.ActorWrapper;
 import com.samsung.game.utils.GameUtils;
 
-public class PxFont extends UIComponent {
+public class PxFont extends ActorWrapper {
     private static final int DIGIT_COUNT = 10;
     private static final int SIGH_COUNT = 5;
     private static final int NUM_WIDTH;
@@ -62,4 +61,13 @@ public class PxFont extends UIComponent {
         }
     }
 
+    @Override
+    public float getHeight() {
+        return height;
+    }
+
+    @Override
+    public float getWidth() {
+        return (width + width / 5f)*(number+"").length()-(width / 5f);
+    }
 }

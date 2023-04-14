@@ -10,17 +10,22 @@ import com.samsung.game.entities.player.Player;
 import com.samsung.game.items.Equipable;
 import com.samsung.game.items.projectiles.Projectile;
 
+import java.util.Set;
+
 public class FireWeapon extends Weapon implements Equipable<Entity> {
     private ProjectileManager<Projectile> handler;
+    protected Set<Entity> entitySet;
     private float delta_time;
     private int velocity;
 
-    public FireWeapon() {
+    public FireWeapon(Set<Entity> entitySet) {
         super();
-        handler = new ProjectileManager<>();
+        name = "Energy Weapon";
         velocity = 10;
+        this.entitySet = entitySet;
+        handler = new ProjectileManager<>();
         hit_chance = 0.5;
-        setDamageBounds(20, 55);
+        setDamageBounds(15, 25);
     }
 
     public final void shoot(float angle) {
@@ -58,8 +63,8 @@ public class FireWeapon extends Weapon implements Equipable<Entity> {
 
     class M762 extends Projectile {
         public M762(Entity owner) {
-            super(owner);
-            texture = new Texture("sprites/fireball-example1.png");
+            super(owner, FireWeapon.this.entitySet);
+            texture = new Texture("projectile-1.png");
         }
 
         @Override
@@ -74,12 +79,12 @@ public class FireWeapon extends Weapon implements Equipable<Entity> {
 
         @Override
         public void acceptEnemyDamage(Enemy enemy) {
-            enemy.getDamage(getDamage());
+            enemy.putDamage(getDamage());
         }
 
         @Override
         public void acceptPlayerDamage(Player player) {
-            player.getDamage(getDamage());
+            player.putDamage(getDamage());
         }
     }
 

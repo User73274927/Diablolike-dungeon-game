@@ -4,24 +4,25 @@ import com.badlogic.gdx.graphics.Texture;
 import com.samsung.game.entities.Enemy;
 import com.samsung.game.entities.Entity;
 import com.samsung.game.entities.player.Player;
-import com.samsung.game.items.projectiles.Projectile;
+
+import java.util.Set;
 
 public class Fireball extends Projectile {
     private Texture texture;
 
-    public Fireball(Entity owner) {
-        super(owner);
+    public Fireball(Entity owner, Set<Entity> entitySet) {
+        super(owner, entitySet);
         texture = new Texture("sprites/fireball-example1.png");
     }
 
     @Override
     public void acceptEnemyDamage(Enemy enemy) {
-        enemy.getDamage(15);
+        enemy.putDamage(15);
     }
 
     @Override
     public void acceptPlayerDamage(Player player) {
-        player.getDamage(15);
+        player.putDamage(15);
     }
 
     @Override

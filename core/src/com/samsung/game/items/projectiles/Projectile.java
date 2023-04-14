@@ -10,18 +10,21 @@ import com.samsung.game.entities.Entity;
 import com.samsung.game.items.weapon.Weapon;
 
 import java.util.HashSet;
+import java.util.Set;
 
 public abstract class Projectile extends Weapon implements Collideable, Damage {
     private boolean invisible;
     public boolean destroyed;
     public Texture texture;
+    protected Set<Entity> entitySet;
     private Entity owner;
     public float angle;
     public float velocity;
     private float x, y;
 
-    public Projectile(Entity owner) {
+    public Projectile(Entity owner, Set<Entity> entitySet) {
         this.owner = owner;
+        this.entitySet = entitySet;
         this.x = owner.getCenterX();
         this.y = owner.getCenterY();
         destroyed = false;
@@ -37,7 +40,7 @@ public abstract class Projectile extends Weapon implements Collideable, Damage {
             return;
         }
 
-        for (Entity entity : LevelManager.current_level.allEntity) {
+        for (Entity entity : entitySet) {
             if (entity == owner) {
                 continue;
             }
