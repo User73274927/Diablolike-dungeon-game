@@ -3,7 +3,6 @@ package com.samsung.game.map;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class TiledMapAdapter implements Map {
-
     @Override
     public void load() {
 

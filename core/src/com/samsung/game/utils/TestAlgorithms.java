@@ -1,15 +1,14 @@
 package com.samsung.game.utils;
 
-import com.samsung.game.map.Tile;
+import com.samsung.game.engine.Side;
+import com.samsung.game.entities.player.Player;
+import com.samsung.game.map.Wall;
 
 public class TestAlgorithms {
-    public static int[] findTileByCoords(Tile[][] map, int x, int y) {
-        int row = 0, col = 0;
-
-        if (x > 0 || y > 0) {
-            row = x / Tile.SIZE;
-            col = map.length - y / Tile.SIZE - 1;
-        }
-        return new int[] {col, row};
+    public static void test1(Player player, Wall wall) {
+        Side s = wall.defineSideFrom(player.getCenterX(), player.getCenterY());
+        DebugConsole.addMessage("tl", "tile x: " + (wall.getX() + wall.getWidth() / 2f) + " " +
+                                                    "tile y: " + (wall.getY() + wall.getHeight() / 2f));
+        DebugConsole.addMessage("test1", s+"");
     }
 }

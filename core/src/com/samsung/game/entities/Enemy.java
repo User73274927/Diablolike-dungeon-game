@@ -3,8 +3,8 @@ package com.samsung.game.entities;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.samsung.game.DGame;
 import com.samsung.game.engine.ItemGenerator;
-import com.samsung.game.engine.LevelData;
 import com.samsung.game.entities.player.PlayerController;
 import com.samsung.game.entities.player.PlayerObserver;
 import com.samsung.game.items.Item;
@@ -16,23 +16,22 @@ public abstract class Enemy extends Entity implements PlayerObserver {
     private boolean isDead;
     private ItemGenerator item_generator;
 
-    public Enemy(LevelData data, float x, float y) {
-        super(data, x, y);
-        setEnemyName(getClass().getName());
+    public Enemy(float x, float y) {
+        super(x, y);
         current_frame = new TextureRegion(new Texture("sprites/player-example1.png"));
         item_generator = new ItemGenerator();
         Potion potion = item_generator.generatePotion();
         drop_item = potion;
 
         isDead = false;
-        pos.x = x;
-        pos.y = y;
-
-        onSpawn();
+        String name = getClass().getName();
+        setEnemyName(name.substring(name.lastIndexOf('.')+1));
+        onCreate();
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        update();
         if (!isDead) {
             batch.draw(current_frame, getX(), getY(), getWidth(), getHeight());
         }
@@ -47,15 +46,15 @@ public abstract class Enemy extends Entity implements PlayerObserver {
     }
 
     @Override
-    public void onDie() {
-        data.visible_components.add(drop_item);
+    public void onDestroy() {
+        DGame.data.visible_items.add(drop_item);
         drop_item.drop(getX(), getY());
         isDead = true;
-        data.removeEntity(this);
+        DGame.data.removeEntity(this);
     }
 
     @Override
-    public void doAction(PlayerController controller) {
+    public void execute(PlayerController controller) {
         controller.current_entity = this;
         System.out.println(getEnemyName() + " attacks player");
     }

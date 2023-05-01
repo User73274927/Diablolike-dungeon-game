@@ -9,4 +9,14 @@ public class RecoveryPotion extends Potion {
         player.addHealth(30);
         player.addStamina(30);
     }
+
+    @Override
+    public String getItemName() {
+        return "Recovery potion";
+    }
+
+    @Override
+    public String info() {
+        return "recover 30 ed of \nhealth and mana";
+    }
 }

@@ -1,5 +1,6 @@
 package com.samsung.game.engine.gdx;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.SnapshotArray;
@@ -33,4 +34,9 @@ public class GroupWrapper extends Group {
         return (ActorWrapper) getChildren().get(index);
     }
 
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        //batch.draw(new Texture("sprites/player-example1.png"), getX(), getY(), getWidth(), getHeight());
+        super.draw(batch, parentAlpha);
+    }
 }

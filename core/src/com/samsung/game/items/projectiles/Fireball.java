@@ -5,33 +5,29 @@ import com.samsung.game.entities.Enemy;
 import com.samsung.game.entities.Entity;
 import com.samsung.game.entities.player.Player;
 
-import java.util.Set;
-
 public class Fireball extends Projectile {
     private Texture texture;
 
-    public Fireball(Entity owner, Set<Entity> entitySet) {
-        super(owner, entitySet);
+    public Fireball(Entity owner) {
+        super(owner);
         texture = new Texture("sprites/fireball-example1.png");
+        body.width = 20;
+        body.height = 20;
     }
 
     @Override
-    public void acceptEnemyDamage(Enemy enemy) {
+    public Projectile clone() {
+        return new Fireball(owner);
+    }
+
+    @Override
+    public void acceptDamage(Enemy enemy) {
         enemy.putDamage(15);
     }
 
     @Override
-    public void acceptPlayerDamage(Player player) {
+    public void acceptDamage(Player player) {
         player.putDamage(15);
     }
 
-    @Override
-    public float getWidth() {
-        return 20;
-    }
-
-    @Override
-    public float getHeight() {
-        return 20;
-    }
 }

@@ -1,5 +1,6 @@
 package com.samsung.game.engine;
 
+import com.samsung.game.DGame;
 import com.samsung.game.items.projectiles.Projectile;
 
 import java.util.HashSet;
@@ -7,7 +8,7 @@ import java.util.HashSet;
 public class ProjectileManager<T extends Projectile> {
     private HashSet<T> projectiles;
     private HashSet<T> to_destroy;
-    private volatile T current_projectile;
+    private T current_projectile;
 
     public ProjectileManager() {
         projectiles = new HashSet<>();
@@ -19,20 +20,24 @@ public class ProjectileManager<T extends Projectile> {
             current_projectile = projectile;
             projectile.update();
 
-            if (projectile.destroyed) {
+            if (projectile.destroyed || projectile.getTime() >= projectile.limit) {
                 to_destroy.add(projectile);
             }
 
         }
 
         for (Projectile p : to_destroy) {
+            p.onDestroy();
             projectiles.remove(p);
+            p.texture.dispose();
         }
 
         to_destroy.clear();
     }
 
     public void add(T projectile) {
+        projectile.onCreate();
+        DGame.data.field.addBody(projectile.body);
         projectiles.add(projectile);
     }
 

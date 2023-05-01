@@ -4,11 +4,11 @@ import com.samsung.game.engine.Damage;
 import com.samsung.game.entities.Enemy;
 import com.samsung.game.entities.Entity;
 import com.samsung.game.entities.player.Player;
-import com.samsung.game.items.Equipable;
+import com.samsung.game.items.PlayerEquipable;
 
 import java.util.Set;
 
-public abstract class ColdWeapon extends Weapon implements Damage, Equipable<Entity> {
+public abstract class ColdWeapon extends Weapon implements Damage, PlayerEquipable<Entity> {
     protected float attack_distance = 5;
     protected Set<Entity> entitySet;
 
@@ -32,12 +32,12 @@ public abstract class ColdWeapon extends Weapon implements Damage, Equipable<Ent
     }
 
     @Override
-    public void acceptEnemyDamage(Enemy enemy) {
+    public void acceptDamage(Enemy enemy) {
         enemy.putDamage(getDamage());
     }
 
     @Override
-    public void acceptPlayerDamage(Player player) {
+    public void acceptDamage(Player player) {
         player.putDamage(getDamage());
     }
 }

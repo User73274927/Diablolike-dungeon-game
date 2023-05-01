@@ -9,8 +9,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class LevelData {
+    public final PhysicField field;
     public final AsciiMap map;
-    public final Set<Item> visible_components;
+    public final Set<Item> visible_items;
+    public final Set<Drawable> effects;
     public final Set<Entity> allEntity;
 
     final Group entityHandler;
@@ -18,34 +20,31 @@ public class LevelData {
 
     public LevelData(AsciiMap map) {
         this.map = map;
-        visible_components = new HashSet<>();
+        field = new PhysicField();
+        field.setMap(map);
+        visible_items = new HashSet<>();
+        effects = new HashSet<>();
         allEntity = new HashSet<>();
         entityHandler = new Group();
         itemHandler = new Group();
     }
 
-    public void update() {
-
-    }
-
     public void addEntity(Entity entity) {
         allEntity.add(entity);
+        field.addBody(entity.getBody());
         entityHandler.addActor(entity);
-        entity.update_thread.start();
     }
 
     public void removeEntity(Entity entity) {
-        entity.update_thread.interrupt();
+        field.addBody(entity.getBody());
         entityHandler.removeActor(entity);
         allEntity.remove(entity);
     }
 
     public void removeAllEntity() {
         for (Entity entity : allEntity) {
-            entity.update_thread.interrupt();
             entityHandler.removeActor(entity);
         }
         allEntity.clear();
     }
-
 }

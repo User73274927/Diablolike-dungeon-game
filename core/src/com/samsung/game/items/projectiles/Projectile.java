@@ -3,44 +3,64 @@ package com.samsung.game.items.projectiles;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.samsung.game.DGame;
 import com.samsung.game.engine.Collideable;
 import com.samsung.game.engine.Damage;
-import com.samsung.game.engine.LevelManager;
+import com.samsung.game.engine.Lifecycle;
+import com.samsung.game.engine.RigidBody;
 import com.samsung.game.entities.Entity;
 import com.samsung.game.items.weapon.Weapon;
+import com.samsung.game.map.Wall;
 
-import java.util.HashSet;
-import java.util.Set;
+public abstract class Projectile extends Weapon implements
+                                    Lifecycle, Collideable, Damage {
+    public final RigidBody body;
 
-public abstract class Projectile extends Weapon implements Collideable, Damage {
+    private float time;
+    public float limit;
     private boolean invisible;
     public boolean destroyed;
     public Texture texture;
-    protected Set<Entity> entitySet;
-    private Entity owner;
+    protected Entity owner;
     public float angle;
-    public float velocity;
-    private float x, y;
+    public float speed;
 
-    public Projectile(Entity owner, Set<Entity> entitySet) {
+    public Projectile(Entity owner) {
+        body = new RigidBody(0, 0);
+        body.addWallTouchedListener(new RigidBody.WallTouchedListener() {
+            @Override
+            public void touched(Wall wall) {
+                destroyed = !body.flag_wallIgnore;
+            }
+        });
+
         this.owner = owner;
-        this.entitySet = entitySet;
-        this.x = owner.getCenterX();
-        this.y = owner.getCenterY();
+        body.setPosX(owner.getCenterX());
+        body.setPosY(owner.getCenterY());
         destroyed = false;
-        projectiles.add(this);
+    }
+
+    @Override
+    public void onCreate() {
+        body.flag_wallIgnore = false;
+        limit = 3;
     }
 
     public void update() {
-        x += velocity * Math.cos(angle);
-        y += velocity * Math.sin(angle);
+        time += Gdx.graphics.getDeltaTime();
+
+        body.getVel().set(
+                (float) (speed*Math.cos(angle)),
+                (float) (speed*Math.sin(angle))
+        );
+        body.update();
 
         //Условие если пуля коснулась цели, запрещающая засчитывать новые попадания
         if (invisible) {
             return;
         }
 
-        for (Entity entity : entitySet) {
+        for (Entity entity : DGame.data.allEntity) {
             if (entity == owner) {
                 continue;
             }
@@ -54,24 +74,43 @@ public abstract class Projectile extends Weapon implements Collideable, Damage {
             }
         }
 
-        if (x > Gdx.graphics.getWidth() || x < 0 || y > Gdx.graphics.getHeight() || y < 0) {
+        if (getX() > Gdx.graphics.getWidth() || getX() < 0 || getY() > Gdx.graphics.getHeight() || getY() < 0) {
             destroyed = true;
         }
     }
 
     @Override
-    public void draw(Batch batch) {
+    public void draw(Batch batch, float pa) {
         batch.draw(texture, getX(), getY(), getWidth(), getHeight());
     }
 
     @Override
-    public float getX() {
-        return x;
+    public void onDestroy() {
+        texture.dispose();
     }
 
     @Override
-    public float getY() {
-        return y;
+    public final float getX() {
+        return body.getX();
+    }
+
+    @Override
+    public final float getY() {
+        return body.getY();
+    }
+
+    @Override
+    public final float getWidth() {
+        return body.width;
+    }
+
+    @Override
+    public final float getHeight() {
+        return body.height;
+    }
+
+    public float getTime() {
+        return time;
     }
 
     @Override
@@ -79,15 +118,5 @@ public abstract class Projectile extends Weapon implements Collideable, Damage {
         return "";
     }
 
-    //static members
-
-    private static HashSet<Projectile> projectiles;
-
-    static {
-        projectiles = new HashSet<>();
-    }
-
-    public static HashSet<Projectile> projectiles() {
-        return projectiles;
-    }
+    public abstract Projectile clone();
 }

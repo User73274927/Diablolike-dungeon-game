@@ -1,11 +1,9 @@
 package com.samsung.game.entities.player;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.samsung.game.engine.Drawable;
 import com.samsung.game.entities.Entity;
-import com.samsung.game.items.Equipable;
 import com.samsung.game.items.Inventory;
 import com.samsung.game.items.Item;
+import com.samsung.game.items.PlayerEquipable;
 import com.samsung.game.items.armor.Armour;
 import com.samsung.game.items.armor.Helmet;
 import com.samsung.game.items.potions.Potion;
@@ -14,12 +12,12 @@ public class PlayerInventory {
     private Player player;
 
     Inventory<Item> main_inventory;
-    Equipable<?> item_on_hand;
+    PlayerEquipable<? extends Entity> item_on_hand;
     Inventory<Potion> potion_bar;
     Item helmet;
     Armour armor;
 
-    PlayerInventory(Player player) {
+    public PlayerInventory(Player player) {
         this.player = player;
         main_inventory = new Inventory<>(4, 6);
         potion_bar = new Inventory<>(1, 4);
@@ -28,17 +26,16 @@ public class PlayerInventory {
     public void setHelmet(Helmet helmet) {
         helmet.setOwner(player);
         this.helmet = helmet;
-        this.helmet.findUIView(Item.UILocation.IN_INVENTORY).visible = true;
+        //helmet.visible = true;
     }
 
     public void setArmour(Armour armor) {
         armor.setOwner(player);
         this.armor = armor;
-        this.armor.findUIView(Item.UILocation.ON_SCREEN).visible = true;
         armor.visible = true;
     }
 
-    public void setItemOnHand(Equipable<? super Entity> item_on_hand) {
+    public void setItemOnHand(PlayerEquipable<? super Entity> item_on_hand) {
         item_on_hand.setOwner(player);
         this.item_on_hand = item_on_hand;
     }
@@ -48,13 +45,7 @@ public class PlayerInventory {
         return isPut;
     }
 
-    public void draw(Batch batch) {
-        if (item_on_hand instanceof  Drawable) {
-            ((Drawable) item_on_hand).draw(batch);
-        }
-    }
-
-    public Inventory<Item> getMain_inventory() {
+    public Inventory<Item> getMainInventory() {
         return main_inventory;
     }
 }

@@ -1,136 +1,67 @@
 package com.samsung.game.entities;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.samsung.game.engine.Collideable;
-import com.samsung.game.engine.LevelData;
+import com.samsung.game.engine.Lifecycle;
+import com.samsung.game.engine.RigidBody;
 import com.samsung.game.engine.gdx.ActorWrapper;
 import com.samsung.game.map.Tile;
-import com.samsung.game.map.Wall;
 
 import java.util.HashMap;
-import java.util.Set;
 
-;
-
-public abstract class Entity extends ActorWrapper implements Collideable, Runnable {
+public abstract class Entity extends ActorWrapper implements Collideable, Lifecycle {
     public static final int MAX_LEVEL = 100;
     public static final float MAX_SPEED = Tile.SIZE;
     public static final float MAX_RESISTANCE = 80;
     public int MAX_HEALTH = 100;
 
-    private HashMap<String, Animation<TextureRegion>> animation;
-    private Collideable current_collide_tile;
-    protected TextureRegion current_frame;
-    protected Rectangle hitbox;
-    protected int width, height;
-    protected Vector2 pos;
-    protected Vector2 velocity;
-    public final Thread update_thread;
-    protected final LevelData data;
+    protected HashMap<String, Animation<TextureRegion>> walkAnimationDict;
+    protected Animation<TextureRegion> current_animation;
+    private float time;
 
-    private int physical_resistance = 0;
-    private int fire_resistance = 0;
-    private int cold_resistance = 0;
+    protected TextureRegion current_frame;
+    protected RigidBody body;
 
     protected State state;
-    protected Direction direction;
-    protected Integer health;
+    protected Integer health = 1;
 
     public enum State {
         ACTIVE, STAN
     }
 
-    public enum Direction {
-        STOP, UP, DOWN, LEFT, RIGHT
-    }
-
-    public Entity(LevelData data, float x, float y) {
-        this.data = data;
-        update_thread = new Thread(this);
-        pos = new Vector2(x, y);
-        velocity = new Vector2();
+    public Entity(float x, float y) {
+        walkAnimationDict = new HashMap<>();
+        body = new RigidBody(x, y);
 
         state = State.ACTIVE;
-        direction = Direction.STOP;
-        width = 20;
-        height = 20;
+        body.width = 20;
+        body.height = 20;
     }
 
-    public Entity(LevelData data) {
-        this(data, 0, 0);
+    public Entity() {
+        this(0, 0);
     }
 
     @Override
-    public void run() {
-        while (isEntityAlive()) {
-            update();
-            try {
-                Thread.sleep(16);
-            } catch (InterruptedException e) {
-                throw new RuntimeException();
-            }
+    public void update() {
+        time += Gdx.graphics.getDeltaTime();
+        if (current_animation != null) {
+            current_frame = current_animation.getKeyFrame(time, true);
         }
-        onDie();
+
+        if (!isEntityAlive()) {
+            onDestroy();
+        }
+        body.update();
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(current_frame, getX(), getY(), width, height);
+        batch.draw(current_frame, getX(), getY(), body.width, body.height);
         super.draw(batch, parentAlpha);
-    }
-
-    public boolean checkCollision() {
-        Tile[][] tile_map = data.map.getTiledMap();
-        Set<Entity> entitySet = data.allEntity;
-
-        for (Entity entity : entitySet) {
-            if (entity == this) continue;
-            if (overlaps(entity)) {
-                current_collide_tile = entity;
-                return true;
-            }
-        }
-
-        for (int i = 0; i < tile_map.length; i++) {
-            for (int j = 0; j < tile_map[0].length; j++) {
-                Tile tile = tile_map[i][j];
-
-                if (tile instanceof Wall) {
-                    if (overlaps((Wall) tile)) {
-                        current_collide_tile = (Collideable) tile;
-                        return true;
-                    }
-                }
-            }
-        }
-
-        current_collide_tile = null;
-        return false;
-    }
-
-    public void detectCollision() {
-        if (checkCollision()) {
-            Collideable collide_tile = getCurrentCollideTile();
-
-            switch (direction) {
-                case UP:
-                    pos.y += -(pos.y + getHeight() - collide_tile.getY());
-                    break;
-                case DOWN:
-                    pos.y += (collide_tile.getY() + Tile.SIZE - pos.y);
-                    break;
-                case LEFT:
-                    pos.x += (collide_tile.getX() + Tile.SIZE - pos.x);
-                    break;
-                case RIGHT:
-                    pos.x += -(pos.x + getWidth() - collide_tile.getX());
-                    break;
-            }
-        }
     }
 
     public void putDamage(int damage) {
@@ -145,35 +76,59 @@ public abstract class Entity extends ActorWrapper implements Collideable, Runnab
         return health > 0;
     }
 
-    public Collideable getCurrentCollideTile() {
-        return current_collide_tile;
-    }
     public Integer getHealth() {
         return health;
     }
 
+    public RigidBody getBody() {
+        return body;
+    }
+
     @Override
     public final float getWidth() {
-        return width;
+        return body.width;
     }
 
     @Override
     public final float getHeight() {
-        return height;
+        return body.height;
+    }
+
+    public void setLocation(float x, float y) {
+        setX(x); setY(y);
+    }
+
+    public float getTime() {
+        return time;
+    }
+
+    @Override
+    public void setY(float y) {
+        body.setPosY(y);
+    }
+
+    @Override
+    public void setX(float x) {
+        body.setPosX(x);
     }
 
     @Override
     public final float getX() {
-        return pos.x;
+        return body.getX();
     }
 
     @Override
     public final float getY() {
-        return pos.y;
+        return body.getY();
     }
 
-    public abstract void onSpawn();
-    public abstract void update();
-    public abstract void onDie();
+    @Override
+    public final float getCenterX() {
+        return body.getCenterX();
+    }
 
+    @Override
+    public final float getCenterY() {
+        return body.getCenterY();
+    }
 }

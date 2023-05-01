@@ -4,7 +4,7 @@ import com.samsung.game.items.armor.Armor;
 import com.samsung.game.items.armor.Helmet;
 import com.samsung.game.items.potions.HealthPotion;
 import com.samsung.game.items.potions.Potion;
-import com.samsung.game.items.potions.StaminaPotion;
+import com.samsung.game.items.potions.ManaPotion;
 
 public class ItemGenerator {
     private Class<?>[] item_types = {
@@ -12,7 +12,7 @@ public class ItemGenerator {
     };
 
     public Potion generatePotion() {
-        return Math.random() <= 0.5 ? new StaminaPotion() : new HealthPotion();
+        return Math.random() <= 0.5 ? new ManaPotion() : new HealthPotion();
     }
 
 }

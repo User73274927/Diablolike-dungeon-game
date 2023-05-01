@@ -1,7 +1,6 @@
 package com.samsung.game.items.potions;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.samsung.game.entities.Entity;
 import com.samsung.game.entities.player.Player;
 
 public class HealthPotion extends Potion {
@@ -13,6 +12,16 @@ public class HealthPotion extends Potion {
     @Override
     public void use(Player player) {
         player.addHealth(40);
+    }
+
+    @Override
+    public String getItemName() {
+        return "health potion";
+    }
+
+    @Override
+    public String info() {
+        return "recover 30 ed of \nhealth";
     }
 
 }

@@ -1,15 +1,13 @@
 package com.samsung.game.items.potions;
 
-import com.samsung.game.entities.Entity;
 import com.samsung.game.items.Item;
 import com.samsung.game.items.PlayerUsable;
 import com.samsung.game.map.Tile;
 
 public abstract class Potion extends Item implements PlayerUsable {
-
     public Potion() {
         texture = icon_texture;
-        width = height = Tile.SIZE;
+        size.width = size.height = Tile.SIZE;
     }
 
     @Override

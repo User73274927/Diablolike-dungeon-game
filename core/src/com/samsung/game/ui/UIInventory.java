@@ -32,10 +32,6 @@ public class UIInventory extends GroupWrapper {
 
         for (int i = 0; i < inventory.cols(); i++) {
             for (int j = 0; j < inventory.rows(); j++) {
-                inventory.getItem(i + 1, j + 1).ifPresent(item -> {
-                    item.findUIView(Item.UILocation.IN_INVENTORY).visible = true;
-                });
-
                 Slot slot = slots[i][j] = new Slot();
                 slot.setInventoryCell(i + 1, j + 1);
                 addActor(slot);

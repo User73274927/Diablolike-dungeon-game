@@ -1,8 +1,6 @@
 package com.samsung.game.items.weapon.coldWeapon;
 
 import com.samsung.game.entities.Entity;
-import com.samsung.game.entities.player.Player;
-import com.samsung.game.items.Equipable;
 import com.samsung.game.items.weapon.ColdWeapon;
 
 import java.util.Set;

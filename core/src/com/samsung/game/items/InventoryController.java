@@ -1,5 +1,8 @@
 package com.samsung.game.items;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class InventoryController<T extends Item> {
     @FunctionalInterface
     public interface Action<T> {
@@ -7,10 +10,12 @@ public class InventoryController<T extends Item> {
     }
 
     private final Inventory<T> inventory;
+    private Map<String, Action<T>> actionDict;
     private Action<T> onTouchAction;
     private Action<T> onDoubleTouchAction;
 
     public InventoryController(Inventory<T> inventory) {
+        actionDict = new HashMap<>();
         this.inventory = inventory;
     }
 
@@ -41,4 +46,26 @@ public class InventoryController<T extends Item> {
     public final void setOnTouchAction(Action<T> action) {
         this.onTouchAction = action;
     }
+
+    public final void setOnDoubleTouchAction(String key) {
+        if (!actionDict.containsKey(key)) {
+            throw new IllegalArgumentException("action with \"" + key + "\" not found");
+        }
+        this.onDoubleTouchAction = actionDict.get(key);
+    }
+
+    public final void setOnTouchAction(String key) {
+        if (!actionDict.containsKey(key)) {
+            throw new IllegalArgumentException("action with \"" + key + "\" not found");
+        }
+        this.onTouchAction = actionDict.get(key);
+    }
+
+    public void addAction(Action<T> action, String key) {
+        if (action == null) {
+            throw new NullPointerException("action is null");
+        }
+        actionDict.put(key, action);
+    }
+
 }

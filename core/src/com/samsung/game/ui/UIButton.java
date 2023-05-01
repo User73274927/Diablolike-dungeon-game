@@ -3,11 +3,8 @@ package com.samsung.game.ui;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
-import java.util.function.Predicate;
 
 public class UIButton extends UIComponent {
     @FunctionalInterface
@@ -15,10 +12,10 @@ public class UIButton extends UIComponent {
         void action();
     }
 
+    private ClickAction click_action;
     private Texture button_on;
     private Texture button_off;
     private boolean pressed;
-    private ClickAction click_action;
     private Action action;
 
     public UIButton(Texture button_on, Texture button_off) {
@@ -37,7 +34,9 @@ public class UIButton extends UIComponent {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                click_action.action();
+                if (click_action != null) {
+                    click_action.action();
+                }
                 pressed = false;
                 return true;
             }

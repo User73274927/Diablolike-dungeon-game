@@ -1,9 +1,7 @@
 package com.samsung.game.items.armor;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.samsung.game.entities.Entity;
-import com.samsung.game.items.Equipable;
 import com.samsung.game.items.Item;
 import com.samsung.game.map.Tile;
 
@@ -14,7 +12,7 @@ public abstract class Armor extends Item {
     public Armor() {
         texture = new Texture("sprites/armor-example1.png");
         icon_texture = texture;
-        width = height = Tile.SIZE;
+        size.width = size.height = Tile.SIZE;
     }
 
     @Override
