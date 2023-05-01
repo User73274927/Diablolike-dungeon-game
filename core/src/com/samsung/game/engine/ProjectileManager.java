@@ -29,7 +29,6 @@ public class ProjectileManager<T extends Projectile> {
         for (Projectile p : to_destroy) {
             p.onDestroy();
             projectiles.remove(p);
-            p.texture.dispose();
         }
 
         to_destroy.clear();

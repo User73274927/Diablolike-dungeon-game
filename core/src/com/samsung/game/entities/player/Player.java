@@ -45,16 +45,22 @@ public class Player extends Entity {
     @Override
     public void onCreate() {
         inventory = new PlayerInventory(this);
-        final Animation<TextureRegion> knight_asset = DGame.animations.getAnimation("hero");
-        walkAnimationDict.put("right", knight_asset);
-        current_animation = walkAnimationDict.get("right");
+        final Animation<TextureRegion> walk_right = DGame.animations.getAnimation("hero-walk-right");
+        final Animation<TextureRegion> walk_left = DGame.animations.getAnimation("hero-walk-left");
+        walk_left.setPlayMode(Animation.PlayMode.LOOP);
+        walk_right.setPlayMode(Animation.PlayMode.LOOP);
+
+        animationDict.put("attack", DGame.animations.getAnimation("hero-attack"));
+        animationDict.put("right", walk_right);
+        animationDict.put("left", walk_left);
+        current_animation = animationDict.get("right");
 
         shoot_sound = Gdx.audio.newSound(Gdx.files.internal("shoot-example1.mp3"));
         interaction_field = new Rectangle();
         interaction_field.width = getWidth()*7;
         interaction_field.height = getWidth()*7;
 
-        current_frame = knight_asset.getKeyFrames()[0];
+        current_frame = walk_right.getKeyFrames()[0];
         projectile_handler = new ProjectileManager<>();
 
         inventory.setArmour(new Armour(Armour.Type.Iron));
@@ -89,7 +95,6 @@ public class Player extends Entity {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        update();
         batch.draw(current_frame, body.getX(), body.getY(),
                 getWidth(), getHeight()
         );
@@ -113,6 +118,13 @@ public class Player extends Entity {
         //detectCollision();
     }
 
+    public void attack(int mouse_x, int mouse_y) {
+        state = State.ATTACKING;
+        current_animation = animationDict.get("attack");
+        inventory.item_on_hand.onTouch(mouse_x, mouse_y);
+        shoot_sound.play(1f);
+    }
+
     public void updateClick(float mouse_x, float mouse_y) {
         for (Item item : DGame.data.visible_items) {
             if (item.intersects(mouse_x, mouse_y) && interactsWith(item)) {
@@ -120,8 +132,7 @@ public class Player extends Entity {
                 return;
             }
         }
-        inventory.item_on_hand.onTouch(mouse_x, mouse_y);
-        shoot_sound.play(1f);
+        attack((int)mouse_x, (int)mouse_y);
     }
 
     private void putPotion(Item item) {

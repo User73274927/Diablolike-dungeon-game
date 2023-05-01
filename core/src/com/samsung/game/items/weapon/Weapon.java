@@ -39,7 +39,7 @@ public abstract class Weapon extends Item {
     public boolean isHit() {
         double num = hit_rand.nextDouble();
         System.out.println(num);
-        return num >= hit_chance;
+        return num <= hit_chance;
     }
 
     public int getMinDamage() {

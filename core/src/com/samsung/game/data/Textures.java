@@ -34,7 +34,10 @@ public class Textures {
 
         addTexture("plain-button.png");
         addTexture("projectile-1.png");
-        addTexture("sprites/hero.png");
+
+        addTexture("sprites/player-sheet-left.png");
+        addTexture("sprites/player-sheet-right.png");
+        addTexture("sprites/player-sheet-attack.png");
     }
 
 

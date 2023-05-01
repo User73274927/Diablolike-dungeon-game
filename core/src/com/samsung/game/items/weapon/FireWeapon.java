@@ -21,14 +21,12 @@ public class FireWeapon extends Weapon implements PlayerEquipable<Entity> {
         name = "Energy Weapon";
         velocity = 10;
         handler = new ProjectileManager<>();
-        hit_chance = 0.5;
         setDamageBounds(1, 2);
     }
 
     public void shoot(Projectile pr, float angle) {
         if (delta_time >= 0.2) {
             pr.setDamageBounds(getMinDamage(), getMaxDamage());
-            pr.hit_chance = hit_chance;
             pr.speed = velocity;
             pr.angle = angle;
             handler.add(pr);
@@ -66,6 +64,7 @@ public class FireWeapon extends Weapon implements PlayerEquipable<Entity> {
 
     public void setProjectile(Projectile projectile) {
         this.projectile = projectile;
+        this.hit_chance = projectile.hit_chance;
     }
 
     class M762 extends Projectile {

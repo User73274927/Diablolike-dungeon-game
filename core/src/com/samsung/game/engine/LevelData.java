@@ -36,9 +36,9 @@ public class LevelData {
     }
 
     public void removeEntity(Entity entity) {
-        field.addBody(entity.getBody());
+        field.removeBody(entity.getBody());
         entityHandler.removeActor(entity);
-        allEntity.remove(entity);
+        entity.isRemove = true;
     }
 
     public void removeAllEntity() {

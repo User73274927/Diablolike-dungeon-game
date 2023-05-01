@@ -47,4 +47,8 @@ public class PhysicField {
     public void addBody(RigidBody body) {
         bodies.add(body);
     }
+
+    public void removeBody(RigidBody body) {
+        bodies.remove(body);
+    }
 }

@@ -15,7 +15,9 @@ public class Animations {
         textures = DGame.textures;
         animation_dict = new HashMap<>();
 
-        addAnimation("hero", 0.07f, textures.getTexture("sprites/hero.png"), 5);
+        addAnimation("hero-walk-left", 0.07f, textures.getTexture("sprites/player-sheet-left.png"), 5);
+        addAnimation("hero-walk-right", 0.07f, textures.getTexture("sprites/player-sheet-right.png"), 5);
+        addAnimation("hero-attack", 0.14f, textures.getTexture("sprites/player-sheet-attack.png"), 2);
     }
 
     public void addAnimation(String tag, float frame_duration, Texture texture, int rows) {

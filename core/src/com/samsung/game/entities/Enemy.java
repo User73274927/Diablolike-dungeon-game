@@ -13,7 +13,6 @@ import com.samsung.game.items.potions.Potion;
 public abstract class Enemy extends Entity implements PlayerObserver {
     private String name;
     private Item drop_item;
-    private boolean isDead;
     private ItemGenerator item_generator;
 
     public Enemy(float x, float y) {
@@ -23,7 +22,6 @@ public abstract class Enemy extends Entity implements PlayerObserver {
         Potion potion = item_generator.generatePotion();
         drop_item = potion;
 
-        isDead = false;
         String name = getClass().getName();
         setEnemyName(name.substring(name.lastIndexOf('.')+1));
         onCreate();
@@ -31,10 +29,7 @@ public abstract class Enemy extends Entity implements PlayerObserver {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        update();
-        if (!isDead) {
-            batch.draw(current_frame, getX(), getY(), getWidth(), getHeight());
-        }
+        batch.draw(current_frame, getX(), getY(), getWidth(), getHeight());
     }
 
     public String getEnemyName() {
@@ -49,7 +44,6 @@ public abstract class Enemy extends Entity implements PlayerObserver {
     public void onDestroy() {
         DGame.data.visible_items.add(drop_item);
         drop_item.drop(getX(), getY());
-        isDead = true;
         DGame.data.removeEntity(this);
     }
 

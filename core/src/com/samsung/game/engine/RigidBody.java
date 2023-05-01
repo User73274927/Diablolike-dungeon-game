@@ -18,8 +18,8 @@ public class RigidBody implements Collideable {
     private Vector2 velocity;
     private float a; //ускорение
 
-    private Direction x_direction;
-    private Direction y_direction;
+    private Direction direction_x;
+    private Direction direction_y;
 
     private List<WallTouchedListener> wallTouchedListeners;
     private Map<String, JoyStick> sticks;
@@ -41,6 +41,9 @@ public class RigidBody implements Collideable {
         prev_position = new Vector2();
         position = new Vector2(x, y);
         velocity = new Vector2();
+
+        direction_x = Direction.RIGHT;
+        direction_y = Direction.UP;
     }
 
     public void update() {
@@ -51,8 +54,8 @@ public class RigidBody implements Collideable {
             prev_position.set(position);
             position.add(velocity);
 
-            x_direction = velocity.x > 0 ? Direction.RIGHT : Direction.LEFT;
-            y_direction = velocity.y > 0 ? Direction.UP : Direction.DOWN;
+            direction_x = velocity.x > 0 ? Direction.RIGHT : Direction.LEFT;
+            direction_y = velocity.y > 0 ? Direction.UP : Direction.DOWN;
         }
     }
 
@@ -78,11 +81,11 @@ public class RigidBody implements Collideable {
     }
 
     public Direction getXDirection() {
-        return x_direction;
+        return direction_x;
     }
 
     public Direction getYDirection() {
-        return y_direction;
+        return direction_y;
     }
 
     public void setPos(float x, float y) {

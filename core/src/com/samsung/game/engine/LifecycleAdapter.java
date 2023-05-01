@@ -9,4 +9,5 @@ public class LifecycleAdapter implements Lifecycle {
 
     @Override
     public void onDestroy() {}
+
 }

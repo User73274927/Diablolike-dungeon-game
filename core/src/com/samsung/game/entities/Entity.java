@@ -18,9 +18,10 @@ public abstract class Entity extends ActorWrapper implements Collideable, Lifecy
     public static final float MAX_RESISTANCE = 80;
     public int MAX_HEALTH = 100;
 
-    protected HashMap<String, Animation<TextureRegion>> walkAnimationDict;
+    protected final HashMap<String, Animation<TextureRegion>> animationDict;
     protected Animation<TextureRegion> current_animation;
     private float time;
+    public boolean isRemove;
 
     protected TextureRegion current_frame;
     protected RigidBody body;
@@ -29,16 +30,16 @@ public abstract class Entity extends ActorWrapper implements Collideable, Lifecy
     protected Integer health = 1;
 
     public enum State {
-        ACTIVE, STAN
+        PASSIVE, ACTIVE, STAN, ATTACKING, TALKING
     }
 
     public Entity(float x, float y) {
-        walkAnimationDict = new HashMap<>();
+        animationDict = new HashMap<>();
         body = new RigidBody(x, y);
 
-        state = State.ACTIVE;
-        body.width = 20;
-        body.height = 20;
+        state = State.PASSIVE;
+        body.width = 30;
+        body.height = 30;
     }
 
     public Entity() {
@@ -48,20 +49,49 @@ public abstract class Entity extends ActorWrapper implements Collideable, Lifecy
     @Override
     public void update() {
         time += Gdx.graphics.getDeltaTime();
-        if (current_animation != null) {
-            current_frame = current_animation.getKeyFrame(time, true);
-        }
 
         if (!isEntityAlive()) {
             onDestroy();
+            return;
         }
+
         body.update();
+
+        if (current_animation != null) {
+            current_frame = current_animation.getKeyFrame(time);
+
+            if (!current_animation.isAnimationFinished(time)) {
+                return;
+            }
+        }
+
+        //animation change
+        switch (body.getXDirection()) {
+            case LEFT:
+                if (animationDict.containsKey("left")) {
+                    current_animation = animationDict.get("left");
+                }
+                break;
+            case RIGHT:
+                if (animationDict.containsKey("right")) {
+                    current_animation = animationDict.get("right");
+                }
+                break;
+        }
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
         batch.draw(current_frame, getX(), getY(), body.width, body.height);
         super.draw(batch, parentAlpha);
+    }
+
+    public void setAnimation(Animation<TextureRegion> animation, boolean ignored) {
+        
+    }
+
+    public void setAnimation(String tag, boolean ignored) {
+        this.setAnimation(animationDict.get(tag), ignored);
     }
 
     public void putDamage(int damage) {

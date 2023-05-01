@@ -2,9 +2,10 @@ package com.samsung.game.map;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.utils.Disposable;
 import com.samsung.game.engine.Drawable;
 
-public class Tile implements Drawable {
+public class Tile implements Drawable, Disposable {
     public static final int SIZE = 30;
     private Texture texture;
     public int x, y;
@@ -32,4 +33,8 @@ public class Tile implements Drawable {
         return y;
     }
 
+    @Override
+    public void dispose() {
+        texture.dispose();
+    }
 }

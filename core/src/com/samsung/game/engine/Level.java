@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.samsung.game.DGame;
 import com.samsung.game.engine.gdx.StageWrapper;
 import com.samsung.game.entities.Bandit;
+import com.samsung.game.entities.Entity;
 import com.samsung.game.entities.Npc;
 import com.samsung.game.entities.player.Player;
 import com.samsung.game.entities.player.PlayerControlField;
@@ -18,6 +19,8 @@ import com.samsung.game.entities.player.PlayerController;
 import com.samsung.game.items.Item;
 import com.samsung.game.map.AsciiMap;
 import com.samsung.game.screens.GameScreen;
+
+import java.util.Iterator;
 
 public class Level extends StageWrapper {
     private GameScreen game;
@@ -79,6 +82,17 @@ public class Level extends StageWrapper {
 
         game_camera.position.set(player.getCenterX(), player.getCenterY(), 0);
         data.field.update();
+
+        Iterator<Entity> iterator = DGame.data.allEntity.iterator();
+
+        while (iterator.hasNext()) {
+            Entity entity = iterator.next();
+            entity.update();
+
+            if (entity.isRemove) {
+                iterator.remove();
+            }
+        }
 
         getBatch().begin();
         getBatch().setProjectionMatrix(game_camera.combined);

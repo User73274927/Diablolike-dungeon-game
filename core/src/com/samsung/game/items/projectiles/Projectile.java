@@ -86,7 +86,7 @@ public abstract class Projectile extends Weapon implements
 
     @Override
     public void onDestroy() {
-        texture.dispose();
+
     }
 
     @Override
