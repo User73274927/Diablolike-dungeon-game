@@ -38,6 +38,9 @@ public class Textures {
         addTexture("sprites/player-sheet-left.png");
         addTexture("sprites/player-sheet-right.png");
         addTexture("sprites/player-sheet-attack.png");
+
+        addTexture("sprites/monster1-idle-left.png");
+        addTexture("sprites/monster1-idle-right.png");
     }
 
 

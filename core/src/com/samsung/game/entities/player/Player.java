@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.samsung.game.DGame;
+import com.samsung.game.ai.Agent;
 import com.samsung.game.engine.ProjectileManager;
 import com.samsung.game.engine.gdx.ActorWrapper;
 import com.samsung.game.entities.Entity;
@@ -24,6 +25,7 @@ import com.samsung.game.utils.TestAlgorithms;
 
 public class Player extends Entity {
     public int MAX_STAMINA = 50;
+    public Agent agent;
 
     private TextureRegion[][] knight_frames;
     private Rectangle interaction_field;
@@ -39,6 +41,7 @@ public class Player extends Entity {
 
     public Player() {
         super(30, 30);
+        agent = new Agent(this);
         onCreate();
     }
 
@@ -53,7 +56,7 @@ public class Player extends Entity {
         animationDict.put("attack", DGame.animations.getAnimation("hero-attack"));
         animationDict.put("right", walk_right);
         animationDict.put("left", walk_left);
-        current_animation = animationDict.get("right");
+        default_texture = DGame.textures.getTexture("sprites/player-sheet-right.png");
 
         shoot_sound = Gdx.audio.newSound(Gdx.files.internal("shoot-example1.mp3"));
         interaction_field = new Rectangle();
@@ -120,7 +123,7 @@ public class Player extends Entity {
 
     public void attack(int mouse_x, int mouse_y) {
         state = State.ATTACKING;
-        current_animation = animationDict.get("attack");
+        setAnimation("attack", true);
         inventory.item_on_hand.onTouch(mouse_x, mouse_y);
         shoot_sound.play(1f);
     }
@@ -140,6 +143,11 @@ public class Player extends Entity {
 
         if (item instanceof Potion) {
             isPut = inventory.addPotionToBar((Potion) item);
+
+            if (!isPut) {
+                inventory.main_inventory.addItem(item);
+                isPut = true;
+            }
         } else {
             isPut = inventory.main_inventory.addItem(item);
         }

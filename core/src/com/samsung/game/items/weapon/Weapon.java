@@ -1,6 +1,5 @@
 package com.samsung.game.items.weapon;
 
-import com.badlogic.gdx.Gdx;
 import com.samsung.game.entities.Entity;
 import com.samsung.game.items.Item;
 
@@ -38,7 +37,6 @@ public abstract class Weapon extends Item {
 
     public boolean isHit() {
         double num = hit_rand.nextDouble();
-        System.out.println(num);
         return num <= hit_chance;
     }
 

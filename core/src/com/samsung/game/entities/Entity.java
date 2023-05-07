@@ -1,6 +1,7 @@
 package com.samsung.game.entities;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -9,7 +10,10 @@ import com.samsung.game.engine.Lifecycle;
 import com.samsung.game.engine.RigidBody;
 import com.samsung.game.engine.gdx.ActorWrapper;
 import com.samsung.game.map.Tile;
+import com.samsung.game.map.Wall;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 
 public abstract class Entity extends ActorWrapper implements Collideable, Lifecycle {
@@ -19,7 +23,9 @@ public abstract class Entity extends ActorWrapper implements Collideable, Lifecy
     public int MAX_HEALTH = 100;
 
     protected final HashMap<String, Animation<TextureRegion>> animationDict;
-    protected Animation<TextureRegion> current_animation;
+    private Animation<TextureRegion> current_animation;
+    private Deque<Animation<TextureRegion>> animation_queue;
+    protected Texture default_texture;
     private float time;
     public boolean isRemove;
 
@@ -35,11 +41,20 @@ public abstract class Entity extends ActorWrapper implements Collideable, Lifecy
 
     public Entity(float x, float y) {
         animationDict = new HashMap<>();
+        animation_queue = new ArrayDeque<>();
+
         body = new RigidBody(x, y);
 
         state = State.PASSIVE;
         body.width = 30;
         body.height = 30;
+
+        body.addWallTouchedListener(new RigidBody.WallTouchedListener() {
+            @Override
+            public void touched(Wall wall) {
+                body.detectCollision(wall);
+            }
+        });
     }
 
     public Entity() {
@@ -54,30 +69,44 @@ public abstract class Entity extends ActorWrapper implements Collideable, Lifecy
             onDestroy();
             return;
         }
-
         body.update();
 
-        if (current_animation != null) {
-            current_frame = current_animation.getKeyFrame(time);
 
-            if (!current_animation.isAnimationFinished(time)) {
+        //animation
+        int queue_size = animation_queue.size();
+
+        if (current_animation != null && queue_size != 0 && current_animation.isAnimationFinished(time)) {
+            current_animation = animation_queue.pop();
+        }
+        else if (!body.getVel().isZero()) {
+            current_animation = getMovementAnimation();
+        }
+        else {
+            if (getMovementAnimation() != null) {
+                current_frame = getMovementAnimation().getKeyFrame(0);
                 return;
+            }
+            else if (default_texture != null) {
+                current_frame = new TextureRegion(default_texture);
+                return;
+            } else {
+                current_animation = animationDict.getOrDefault("idle", null);
             }
         }
 
-        //animation change
+        if (current_animation != null) {
+            current_frame = current_animation.getKeyFrame(time);
+        }
+    }
+
+    private Animation<TextureRegion> getMovementAnimation() {
         switch (body.getXDirection()) {
             case LEFT:
-                if (animationDict.containsKey("left")) {
-                    current_animation = animationDict.get("left");
-                }
-                break;
+                return animationDict.get("left");
             case RIGHT:
-                if (animationDict.containsKey("right")) {
-                    current_animation = animationDict.get("right");
-                }
-                break;
+                return animationDict.get("right");
         }
+        return null;
     }
 
     @Override
@@ -86,12 +115,16 @@ public abstract class Entity extends ActorWrapper implements Collideable, Lifecy
         super.draw(batch, parentAlpha);
     }
 
-    public void setAnimation(Animation<TextureRegion> animation, boolean ignored) {
-        
+    public void setAnimation(Animation<TextureRegion> animation, boolean first) {
+        if (first) {
+            animation_queue.addFirst(animation);
+            return;
+        }
+        animation_queue.addLast(animation);
     }
 
-    public void setAnimation(String tag, boolean ignored) {
-        this.setAnimation(animationDict.get(tag), ignored);
+    public void setAnimation(String tag, boolean first) {
+        this.setAnimation(animationDict.get(tag), first);
     }
 
     public void putDamage(int damage) {
@@ -161,4 +194,5 @@ public abstract class Entity extends ActorWrapper implements Collideable, Lifecy
     public final float getCenterY() {
         return body.getCenterY();
     }
+
 }

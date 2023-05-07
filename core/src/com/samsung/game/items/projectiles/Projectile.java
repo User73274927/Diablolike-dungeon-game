@@ -30,6 +30,7 @@ public abstract class Projectile extends Weapon implements
         body.addWallTouchedListener(new RigidBody.WallTouchedListener() {
             @Override
             public void touched(Wall wall) {
+                body.setPrevPos();
                 destroyed = !body.flag_wallIgnore;
             }
         });
@@ -74,9 +75,6 @@ public abstract class Projectile extends Weapon implements
             }
         }
 
-        if (getX() > Gdx.graphics.getWidth() || getX() < 0 || getY() > Gdx.graphics.getHeight() || getY() < 0) {
-            destroyed = true;
-        }
     }
 
     @Override

@@ -17,6 +17,7 @@ import com.samsung.game.entities.player.Player;
 import com.samsung.game.entities.player.PlayerControlField;
 import com.samsung.game.entities.player.PlayerController;
 import com.samsung.game.items.Item;
+import com.samsung.game.items.potions.HealthPotion;
 import com.samsung.game.map.AsciiMap;
 import com.samsung.game.screens.GameScreen;
 
@@ -59,10 +60,10 @@ public class Level extends StageWrapper {
     }
 
     public Level create() {
-        Bandit bandit1 = new Bandit(400, 200);
-        Bandit bandit2 = new Bandit(150, 30);
-        Bandit bandit3 = new Bandit(200, 100);
-        Bandit bandit4 = new Bandit(300, 75);
+        Bandit bandit1 = new Bandit(player, 400, 200);
+        Bandit bandit2 = new Bandit(player, 150, 30);
+        Bandit bandit3 = new Bandit(player, 200, 100);
+        Bandit bandit4 = new Bandit(player, 300, 75);
         Npc npc = new Npc(50, 350);
 
         data.addEntity(bandit1);
@@ -71,6 +72,16 @@ public class Level extends StageWrapper {
         data.addEntity(bandit4);
         data.addEntity(npc);
         data.addEntity(controller.getPlayer());
+
+        data.visible_items.add(new HealthPotion());
+        data.visible_items.add(new HealthPotion());
+        data.visible_items.add(new HealthPotion());
+        data.visible_items.add(new HealthPotion());
+        data.visible_items.add(new HealthPotion());
+        data.visible_items.add(new HealthPotion());
+        data.visible_items.add(new HealthPotion());
+
+
 
         DGame.data = data;
         return this;
@@ -96,6 +107,7 @@ public class Level extends StageWrapper {
 
         getBatch().begin();
         getBatch().setProjectionMatrix(game_camera.combined);
+        //batch.setProjectionMatrix(game_camera.combined);
 
         map.draw(getBatch());
         for (Item item : data.visible_items) {

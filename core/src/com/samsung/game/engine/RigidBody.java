@@ -59,6 +59,32 @@ public class RigidBody implements Collideable {
         }
     }
 
+    public void detectCollision(Wall wall) {
+        float plx = getX(), ply = getY();
+        int pl_width = (int) width, pl_height = (int) height;
+
+        float wx = wall.getX(), wy = wall.getY();
+        int w_width = (int) wall.getWidth(), w_height = (int) wall.getHeight();
+
+        float dx = 0, dy = 0;
+
+        switch (wall.defineSideFrom(getCenterX(), getCenterY())) {
+            case NORTH:
+                dy = (wy + w_height - ply);
+                break;
+            case SOUTH:
+                dy = -(ply + pl_height - wy);
+                break;
+            case EAST:
+                dx = (wx + w_width - plx);
+                break;
+            case WEST:
+                dx = -(plx + pl_width - wx);
+                break;
+        }
+
+        getPos().add(dx, dy);
+    }
     public void addWallTouchedListener(WallTouchedListener listener) {
         wallTouchedListeners.add(listener);
     }
@@ -93,6 +119,9 @@ public class RigidBody implements Collideable {
         position.set(x, y);
     }
 
+    public Vector2 getPos() {
+        return position;
+    }
     public void setPosX(float x) {
         prev_position.x = position.x;
         position.x = x;

@@ -31,11 +31,9 @@ public class PhysicField {
     }
     
     public void update() {
-        for (Wall wall : walls) {
-            for (RigidBody body : bodies) {
+        for (RigidBody body : bodies) {
+            for (Wall wall : walls) {
                 if (body.overlaps(wall)) {
-                    body.setPrevPos();
-
                     for (RigidBody.WallTouchedListener l : body.getWallTouchedListeners()) {
                         l.touched(wall);
                     }

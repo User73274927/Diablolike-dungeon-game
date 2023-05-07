@@ -28,10 +28,13 @@ public class ProjectileManager<T extends Projectile> {
 
         for (Projectile p : to_destroy) {
             p.onDestroy();
+            DGame.data.field.removeBody(p.body);
             projectiles.remove(p);
+
         }
 
         to_destroy.clear();
+        System.out.println(projectiles.size());
     }
 
     public void add(T projectile) {

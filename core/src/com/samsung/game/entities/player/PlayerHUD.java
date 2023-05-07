@@ -8,6 +8,7 @@ import com.samsung.game.entities.Entity;
 import com.samsung.game.items.InventoryController;
 import com.samsung.game.items.Item;
 import com.samsung.game.items.PlayerEquipable;
+import com.samsung.game.items.PlayerUsable;
 import com.samsung.game.items.armor.Armour;
 import com.samsung.game.items.armor.Helmet;
 import com.samsung.game.items.potions.Potion;
@@ -51,14 +52,18 @@ public class PlayerHUD extends GroupWrapper {
         }, "info");
 
         item_controller.addAction((item, col, row) -> {
-            if (item instanceof PlayerEquipable) {
+            if (item instanceof PlayerUsable) {
+                ((PlayerUsable) item).use(player);
+                item_controller.getInventory().remove(col, row);
+            }
+            else if (item instanceof PlayerEquipable) {
                 player.inventory.setItemOnHand((PlayerEquipable<? super Entity>) item);
             }
-            if (item instanceof Armour) {
+            else if (item instanceof Armour) {
                 player.inventory.setArmour((Armour) item);
                 armor_view.setPicture(item.getIconTexture());
             }
-            if (item instanceof Helmet) {
+            else if (item instanceof Helmet) {
                 player.inventory.setHelmet((Helmet) item);
                 helmet_view.setPicture(item.getIconTexture());
             }
