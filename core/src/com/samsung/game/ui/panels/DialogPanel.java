@@ -5,8 +5,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.samsung.game.DGame;
 import com.samsung.game.engine.gdx.GroupWrapper;
 import com.samsung.game.ui.UIButton;
+
+import static com.samsung.game.data.Textures.UI;
 
 public class DialogPanel extends GroupWrapper {
     private BitmapFont text_painter;
@@ -29,18 +32,21 @@ public class DialogPanel extends GroupWrapper {
         text_painter = new BitmapFont();
         text_painter.getData().setScale(font_size);
 
-        //close_button = new UIButton(new Texture("button-next.png"), new Texture("button-next.png"));
-        //close_button.setClickAction(() -> {list_num = 0; setVisible(false);});
+        Texture next_tx = DGame.textures.getTexture(UI+"button-next.png");
+        Texture prev_tx = DGame.textures.getTexture(UI+"button-previous.png");
 
-        //next_button = new UIButton(new Texture("button-next.png"), new Texture("button-next.png"));
-        //next_button.setClickAction(() -> list_num += (list_num < dialog_text.length - 1) ? 1 : 0);
+        close_button = new UIButton(next_tx, next_tx);
+        close_button.setClickAction(() -> {list_num = 0; setVisible(false);});
 
-        //previous_button = new UIButton(new Texture("button-previous.png"), new Texture("button-previous.png"));
-        //previous_button.setClickAction(() -> list_num -= (list_num > 0) ? 1 : 0);
+        next_button = new UIButton(next_tx, next_tx);
+        next_button.setClickAction(() -> list_num += (list_num < dialog_text.length - 1) ? 1 : 0);
 
-        //addActor(next_button);
-       //addActor(previous_button);
-        //addActor(close_button);
+        previous_button = new UIButton(prev_tx, prev_tx);
+        previous_button.setClickAction(() -> list_num -= (list_num > 0) ? 1 : 0);
+
+        addActor(next_button);
+        addActor(previous_button);
+        addActor(close_button);
         //addActor(ok_button);
         //addActor(cancel_button);
     }
@@ -55,9 +61,9 @@ public class DialogPanel extends GroupWrapper {
 
     @Override
     public void setBounds(float x, float y, float width, float height) {
-        //close_button.setBounds(width - 30, height - 30, 20, 20);
-        //next_button.setBounds(40, 10, 20, 20);
-        //previous_button.setBounds(10, 10, 20, 20);
+        close_button.setBounds(width - 30, height - 30, 20, 20);
+        next_button.setBounds(40, 10, 20, 20);
+        previous_button.setBounds(10, 10, 20, 20);
         super.setBounds(x, y, width, height);
     }
 

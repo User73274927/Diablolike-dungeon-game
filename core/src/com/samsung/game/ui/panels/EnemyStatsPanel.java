@@ -29,7 +29,7 @@ public class EnemyStatsPanel extends GroupWrapper {
             scale.num = enemy.getHealth();
             scale.max_num = enemy.MAX_HEALTH;
             String name = enemy.getEnemyName();
-            name_painter.draw(batch, name, getCenterX()-name.length()*5, getY()+getHeight());
+            name_painter.draw(batch, name, getCenterX()-(float) (name.length() * 5)/2, getY()+getHeight());
             super.draw(batch, parentAlpha);
         }
     }

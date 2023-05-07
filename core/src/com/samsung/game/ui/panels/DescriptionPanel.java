@@ -11,6 +11,8 @@ import com.samsung.game.items.PlayerEquipable;
 import com.samsung.game.items.PlayerUsable;
 import com.samsung.game.ui.UIButton;
 
+import static com.samsung.game.data.Textures.UI;
+
 public class DescriptionPanel extends GroupWrapper {
     private Texture frame;
     private BitmapFont text_painter;
@@ -28,15 +30,15 @@ public class DescriptionPanel extends GroupWrapper {
     public float font_size = 0.8f;
 
     public DescriptionPanel() {
-        frame = new Texture("tx-description-panel.png");
+        frame = new Texture(UI+"tx-description-panel.png");
         text_painter = DGame.fonts.getFont(Fonts.Type.PxBlackFont10);
         text_painter.setColor(0, 0, 0, 255);
         title = "";
         text = "";
 
-        drop_button = new UIButton(DGame.textures.getTexture("plain-button.png"), DGame.textures.getTexture("plain-button.png"));
-        use_button = new UIButton(DGame.textures.getTexture("plain-button.png"), DGame.textures.getTexture("plain-button.png"));
-        equip_button = new UIButton(DGame.textures.getTexture("plain-button.png"), DGame.textures.getTexture("plain-button.png"));
+        drop_button = new UIButton(DGame.textures.getTexture(UI+"plain-button.png"), DGame.textures.getTexture(UI+"plain-button.png"));
+        use_button = new UIButton(DGame.textures.getTexture(UI+"plain-button.png"), DGame.textures.getTexture(UI+"plain-button.png"));
+        equip_button = new UIButton(DGame.textures.getTexture(UI+"plain-button.png"), DGame.textures.getTexture(UI+"plain-button.png"));
 
         drop_button.setBounds(10, 10, 25, 10);
         //addActor(button);

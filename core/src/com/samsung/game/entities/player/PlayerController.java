@@ -87,6 +87,10 @@ public class PlayerController extends InputAdapter {
 
     @Override
     public boolean keyUp(int keycode) {
+        if (keycode == Input.Keys.ESCAPE) {
+            process.paused = !process.paused;
+            return false;
+        }
         if (keycode == Input.Keys.E) {
             UIInventory bar = playerHUD.main_inventory;
             DescriptionPanel list = playerHUD.item_info;

@@ -71,8 +71,8 @@ public class FireWeapon extends Weapon implements PlayerEquipable<Entity> {
         public M762(Entity owner) {
             super(owner);
             texture = DGame.textures.getTexture("projectile-1.png");
-            body.width = 10;
-            body.height = 10;
+            body.box.width = 10;
+            body.box.height = 10;
         }
 
         @Override

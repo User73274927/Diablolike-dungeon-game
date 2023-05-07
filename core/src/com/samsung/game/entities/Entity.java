@@ -46,8 +46,8 @@ public abstract class Entity extends ActorWrapper implements Collideable, Lifecy
         body = new RigidBody(x, y);
 
         state = State.PASSIVE;
-        body.width = 30;
-        body.height = 30;
+        body.box.width = 30;
+        body.box.height = 30;
 
         body.addWallTouchedListener(new RigidBody.WallTouchedListener() {
             @Override
@@ -111,7 +111,7 @@ public abstract class Entity extends ActorWrapper implements Collideable, Lifecy
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(current_frame, getX(), getY(), body.width, body.height);
+        batch.draw(current_frame, getX(), getY(), body.box.width, body.box.height);
         super.draw(batch, parentAlpha);
     }
 
@@ -149,12 +149,12 @@ public abstract class Entity extends ActorWrapper implements Collideable, Lifecy
 
     @Override
     public final float getWidth() {
-        return body.width;
+        return body.box.width;
     }
 
     @Override
     public final float getHeight() {
-        return body.height;
+        return body.box.height;
     }
 
     public void setLocation(float x, float y) {

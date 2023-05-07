@@ -1,6 +1,7 @@
 package com.samsung.game.engine;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -10,7 +11,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.samsung.game.DGame;
 import com.samsung.game.engine.gdx.StageWrapper;
-import com.samsung.game.entities.Bandit;
+import com.samsung.game.entities.Monster;
 import com.samsung.game.entities.Entity;
 import com.samsung.game.entities.Npc;
 import com.samsung.game.entities.player.Player;
@@ -60,15 +61,15 @@ public class Level extends StageWrapper {
     }
 
     public Level create() {
-        Bandit bandit1 = new Bandit(player, 400, 200);
-        Bandit bandit2 = new Bandit(player, 150, 30);
-        Bandit bandit3 = new Bandit(player, 200, 100);
-        Bandit bandit4 = new Bandit(player, 300, 75);
+        Monster monster1 = new Monster(player, 400, 200);
+        Monster monster2 = new Monster(player, 150, 30);
+        Monster monster3 = new Monster(player, 200, 100);
+        Monster bandit4 = new Monster(player, 300, 75);
         Npc npc = new Npc(50, 350);
 
-        data.addEntity(bandit1);
-        data.addEntity(bandit2);
-        data.addEntity(bandit3);
+        data.addEntity(monster1);
+        data.addEntity(monster2);
+        data.addEntity(monster3);
         data.addEntity(bandit4);
         data.addEntity(npc);
         data.addEntity(controller.getPlayer());
@@ -86,6 +87,8 @@ public class Level extends StageWrapper {
         DGame.data = data;
         return this;
     }
+
+    boolean pause;
 
     public void render() {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);

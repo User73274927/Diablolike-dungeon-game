@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.samsung.game.DGame;
 import com.samsung.game.engine.gdx.GroupWrapper;
 import com.samsung.game.items.Inventory;
 import com.samsung.game.items.InventoryController;
@@ -12,6 +13,8 @@ import com.samsung.game.items.Item;
 import com.samsung.game.map.Tile;
 
 import java.lang.reflect.Array;
+
+import static com.samsung.game.data.Textures.UI;
 
 public class UIInventory extends GroupWrapper {
     private Inventory<? extends Item> inventory;
@@ -95,7 +98,7 @@ public class UIInventory extends GroupWrapper {
         public int width, height;
 
         public Slot(int width, int height) {
-            frame = new Texture("inventory-slot-frame.png");
+            frame = DGame.textures.getTexture(UI+"inventory-slot-frame.png");
             font = new BitmapFont();
             this.width = width;
             this.height = height;

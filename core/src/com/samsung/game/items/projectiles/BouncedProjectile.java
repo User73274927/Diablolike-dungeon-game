@@ -17,8 +17,8 @@ public class BouncedProjectile extends Projectile {
         texture = DGame.textures.getTexture("projectile-1.png");
         body.flag_wallIgnore = true;
 
-        body.width = 10;
-        body.height = 10;
+        body.box.width = 10;
+        body.box.height = 10;
         limit = 10;
 
         body.addWallTouchedListener(new RigidBody.WallTouchedListener() {

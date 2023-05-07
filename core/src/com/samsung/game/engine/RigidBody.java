@@ -1,5 +1,6 @@
 package com.samsung.game.engine;
 
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.samsung.game.map.Wall;
 import com.samsung.game.ui.JoyStick;
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RigidBody implements Collideable {
-    public float width, height;
+    public final Rectangle box;
     public float MAX_VEL;
 
     private Vector2 prev_position;
@@ -22,7 +23,6 @@ public class RigidBody implements Collideable {
     private Direction direction_y;
 
     private List<WallTouchedListener> wallTouchedListeners;
-    private Map<String, JoyStick> sticks;
     private JoyStick current_joystick;
 
     public boolean flag_wallIgnore;
@@ -37,7 +37,8 @@ public class RigidBody implements Collideable {
 
     public RigidBody(float x, float y) {
         wallTouchedListeners = new ArrayList<>();
-        sticks = new HashMap<>();
+
+        box = new Rectangle();
         prev_position = new Vector2();
         position = new Vector2(x, y);
         velocity = new Vector2();
@@ -57,11 +58,14 @@ public class RigidBody implements Collideable {
             direction_x = velocity.x > 0 ? Direction.RIGHT : Direction.LEFT;
             direction_y = velocity.y > 0 ? Direction.UP : Direction.DOWN;
         }
+
+        box.x = position.x;
+        box.y = position.y;
     }
 
     public void detectCollision(Wall wall) {
         float plx = getX(), ply = getY();
-        int pl_width = (int) width, pl_height = (int) height;
+        int pl_width = (int) box.width, pl_height = (int) box.height;
 
         float wx = wall.getX(), wy = wall.getY();
         int w_width = (int) wall.getWidth(), w_height = (int) wall.getHeight();
@@ -150,20 +154,20 @@ public class RigidBody implements Collideable {
 
     @Override
     public float getWidth() {
-        return width;
+        return box.width;
     }
 
     @Override
     public float getHeight() {
-        return height;
+        return box.height;
     }
 
     public float getCenterX() {
-        return position.x + width/2;
+        return position.x + box.width/2;
     }
 
     public float getCenterY() {
-        return position.y + height/2;
+        return position.y + box.height/2;
     }
 
     @Override

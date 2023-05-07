@@ -130,14 +130,14 @@ public class PlayerHUD extends GroupWrapper {
 //        enemyHealth.setY(Gdx.graphics.getHeight() - 45);
 
         dialogPanel = new DialogPanel();
-        dialogPanel.setBounds(viewPort.viewport_width / 2f - 125, viewPort.viewport_width - 125,  250, 100);
+        dialogPanel.setBounds(viewPort.viewport_width / 2f - 125, viewPort.viewport_height - 125,  250, 100);
         dialogPanel.setVisible(false);
 
-        console = new DebugConsole();
-        console.setX(400);
-        console.setY(viewPort.viewport_height);
-
-        addActor(console);
+//        console = new DebugConsole();
+//        console.setX(400);
+//        console.setY(viewPort.viewport_height);
+//
+//        addActor(console);
         addActor(enemy_panel);
         addActor(stats_panel);
         addActor(dialogPanel);

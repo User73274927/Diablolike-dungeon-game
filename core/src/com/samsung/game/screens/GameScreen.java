@@ -1,8 +1,10 @@
 package com.samsung.game.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.GL20;
 import com.samsung.game.DiabloGame;
 import com.samsung.game.engine.Level;
 import com.samsung.game.engine.PlayerViewPort;
@@ -25,6 +27,7 @@ public class GameScreen extends ScreenAdapter {
     public final InputMultiplexer inputMultiplexer;
     private final java.util.Map<String, StageWrapper> scene_dict;
     private StageWrapper current_scene;
+    private State state;
 
     private Map[] maps;
     private int level_nm;
@@ -38,6 +41,7 @@ public class GameScreen extends ScreenAdapter {
         scene_dict = new HashMap<>();
         inputMultiplexer = new InputMultiplexer();
         Gdx.input.setInputProcessor(inputMultiplexer);
+        state = State.RESUME;
 
         level_nm = 0;
         maps = new AsciiMap[3];
@@ -59,12 +63,21 @@ public class GameScreen extends ScreenAdapter {
         inputMultiplexer.addProcessor(controller);
     }
 
+    public boolean paused;
+
     @Override
     public void render(float delta) {
         if (current_scene == null) {
             return;
         }
 
+        state = (paused) ? State.PAUSED : State.RESUME;
+
+        switch (state) {
+            case PAUSED:
+                return;
+            case RESUME:
+        }
         current_scene.getViewport().apply();
         current_scene.act();
         current_scene.draw();
@@ -77,9 +90,6 @@ public class GameScreen extends ScreenAdapter {
         port.act();
         port.update();
         port.draw();
-
-
-
     }
 
     public final void changeScene(final StageWrapper scene) {
@@ -106,5 +116,17 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void dispose() {
         current_scene.dispose();
+    }
+
+    @Override
+    public void pause() {
+        super.pause();
+        state = State.PAUSED;
+    }
+
+    @Override
+    public void resume() {
+        super.resume();
+        state = State.RESUME;
     }
 }

@@ -11,8 +11,8 @@ public class Fireball extends Projectile {
     public Fireball(Entity owner) {
         super(owner);
         texture = new Texture("sprites/fireball-example1.png");
-        body.width = 20;
-        body.height = 20;
+        body.box.width = 20;
+        body.box.height = 20;
     }
 
     @Override

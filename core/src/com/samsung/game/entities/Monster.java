@@ -2,16 +2,18 @@ package com.samsung.game.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
 import com.samsung.game.DGame;
+import com.samsung.game.engine.Damage;
 import com.samsung.game.entities.player.Player;
 import com.samsung.game.items.weapon.FireWeapon;
 
-public class Bandit extends Enemy {
+public class Monster extends Enemy implements Damage {
     private FireWeapon f;
     private float angle;
     private float time;
 
-    public Bandit(Player player, float x, float y) {
+    public Monster(Player player, float x, float y) {
         super(player, x, y);
     }
 
@@ -19,6 +21,7 @@ public class Bandit extends Enemy {
     public void onCreate() {
         animationDict.put("idle", DGame.animations.getAnimation("monster1-left"));
         body.MAX_VEL = 1;
+        setLevel(1);
 
         f = new FireWeapon();
         f.setOwner(this);
@@ -35,10 +38,23 @@ public class Bandit extends Enemy {
     @Override
     public void update() {
         super.update();
+        time += Gdx.graphics.getDeltaTime();
+
         agent.discover(Gdx.graphics.getDeltaTime());
-//        if (new Vector2(body.getPos()).sub(player.body.getPos()).len() <= player.getWidth() / 2 + 5) {
-//            player.addHealth(-1);
-//        }
+        if (new Vector2(body.getPos()).sub(player.body.getPos()).len() <= player.getWidth() / 2 + 8) {
+            acceptDamage(player);
+        }
         //f.shoot(angle += 0.01);
+    }
+
+    @Override
+    public void acceptDamage(Enemy enemy) {}
+
+    @Override
+    public void acceptDamage(Player player) {
+        if (time >= 2) {
+            player.addHealth(-10);
+            time = 0;
+        }
     }
 }

@@ -15,6 +15,7 @@ import com.samsung.game.items.potions.Potion;
 public abstract class Enemy extends Entity implements PlayerObserver {
     protected Agent2 agent;
     protected Player player;
+    private Integer level;
     private String name;
     private Item drop_item;
     private ItemGenerator item_generator;
@@ -49,7 +50,8 @@ public abstract class Enemy extends Entity implements PlayerObserver {
 //        agent.setBehavior(arrive);
 
         String name = getClass().getName();
-        setEnemyName(name.substring(name.lastIndexOf('.')+1));
+        setEnemyName(name.substring(name.lastIndexOf('.')+1) +
+                " ( lvl: " + level + " )");
         onCreate();
     }
 
@@ -79,5 +81,8 @@ public abstract class Enemy extends Entity implements PlayerObserver {
         System.out.println(getEnemyName() + " attacks player");
     }
 
+    public void setLevel(Integer level) {
+        this.level = level;
 
+    }
 }

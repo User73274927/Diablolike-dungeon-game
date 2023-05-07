@@ -12,7 +12,7 @@ public class Textures {
     public static final String FONT = "buttons/";
     public static final String UI = "ui/";
 
-    public static final String SPRITES = "buttons/";
+    public static final String SPRITES = "sprites/";
 
     public static final String TILES = "tiles/";
     public static final String TEXTURE_PACK1 = TILES+"texture-pack1/";
@@ -32,15 +32,21 @@ public class Textures {
         addTexture(TILES+"wall-example1.png");
         addTexture(TILES+"next-level.png");
 
-        addTexture("plain-button.png");
         addTexture("projectile-1.png");
 
-        addTexture("sprites/player-sheet-left.png");
-        addTexture("sprites/player-sheet-right.png");
-        addTexture("sprites/player-sheet-attack.png");
+        addTexture(SPRITES+"player-sheet-left.png");
+        addTexture(SPRITES+"player-sheet-right.png");
+        addTexture(SPRITES+"player-sheet-attack.png");
 
-        addTexture("sprites/monster1-idle-left.png");
-        addTexture("sprites/monster1-idle-right.png");
+        addTexture(SPRITES+"monster1-idle-left.png");
+        addTexture(SPRITES+"monster1-idle-right.png");
+
+        //ui
+        addTexture(UI+"button-next.png");
+        addTexture(UI+"button-previous.png");
+        addTexture(UI+"plain-button.png");
+        addTexture(UI+"inventory-slot-frame.png");
+
     }
 
 

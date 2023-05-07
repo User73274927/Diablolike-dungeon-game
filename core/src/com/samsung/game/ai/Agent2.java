@@ -31,8 +31,18 @@ public abstract class Agent2 {
     }
 
     public Vector2 calculateVelocity() {
+        Vector2 space = getSpaceVectorToTarget();
+        if (space.len() <= target.getWidth()/2 + 5) {
+            return new Vector2();
+        }
+
         Vector2 space_nor = getSpaceVectorToTarget().nor();
-        return space_nor.scl((float) (enemy_body.MAX_VEL*Math.random()), (float) (enemy_body.MAX_VEL*Math.random()));
+        float max_vel = enemy_body.MAX_VEL;
+
+        return space_nor.scl(
+                (float) (max_vel + max_vel*Math.random()),
+                (float) (max_vel + max_vel*Math.random())
+        );
     }
 
     public abstract boolean activate();

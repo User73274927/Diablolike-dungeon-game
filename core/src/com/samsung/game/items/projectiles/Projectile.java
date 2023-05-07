@@ -65,7 +65,7 @@ public abstract class Projectile extends Weapon implements
             if (entity == owner) {
                 continue;
             }
-            if (overlaps(entity)) {
+            if (body.box.overlaps(entity.getBody().box)) {
                 if (isHit()) {
                     acceptDamage(entity);
                     destroyed = true;
@@ -99,12 +99,12 @@ public abstract class Projectile extends Weapon implements
 
     @Override
     public final float getWidth() {
-        return body.width;
+        return body.box.width;
     }
 
     @Override
     public final float getHeight() {
-        return body.height;
+        return body.box.height;
     }
 
     public float getTime() {
