@@ -9,12 +9,11 @@ import com.samsung.game.ui.UIScale;
 
 ;
 
-public class PlayerStatsPanel extends GroupWrapper {
+public class PlayerStatsHUD extends GroupWrapper {
     private final String PATH = "player-stats-asset/";
     private Player player;
     private Texture line;
     private Texture lvl;
-    private Texture empty_unit;
     private Texture health_unit;
     private Texture mana_unit;
 
@@ -24,21 +23,18 @@ public class PlayerStatsPanel extends GroupWrapper {
     private PxNumber mana_nm;
     private PxNumber lvl_nm;
 
-    private int scale_unit_size = 20;
-    private int scale_count = 5;
     private int indent = 15;
 
     private int health;
     private int mana;
     private int level;
 
-    public PlayerStatsPanel(Player player) {
+    public PlayerStatsHUD(Player player) {
         this.player = player;
         line = new Texture(PATH + "line.png");
         lvl = new Texture(PATH + "lvl.png");
         health_unit = new Texture(PATH + "health-scale-unit.png");
         mana_unit = new Texture(PATH + "mana-scale-unit.png");
-        empty_unit = new Texture(PATH + "empty-scale-unit.png");
 
         health_scale = new UIScale(health_unit);
         mana_scale = new UIScale(mana_unit);
@@ -81,11 +77,12 @@ public class PlayerStatsPanel extends GroupWrapper {
         this.level = lvl;
 
         PxNumber tmp = health > mana ? health_nm : mana_nm;
-        health_scale.max_num = player.MAX_HEALTH;
+        health_scale.max_num = player.max_health;
         health_scale.num = health;
         health_scale.setX(indent*2 + tmp.getWidth());
+
         mana_scale.setX(indent*2 + tmp.getWidth());
-        mana_scale.max_num = player.MAX_STAMINA;
+        mana_scale.max_num = player.getMaxMana();
         mana_scale.num = mana;
 
         health_nm.number = health;

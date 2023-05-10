@@ -16,30 +16,29 @@ import com.samsung.game.map.Tile;
 import com.samsung.game.ui.Picture;
 import com.samsung.game.ui.UIInventory;
 import com.samsung.game.ui.panels.DescriptionPanel;
-import com.samsung.game.ui.panels.DialogPanel;
-import com.samsung.game.ui.panels.EnemyStatsPanel;
-import com.samsung.game.ui.panels.PlayerStatsPanel;
+import com.samsung.game.ui.panels.DialogHUD;
+import com.samsung.game.ui.panels.EnemyStatsHUD;
+import com.samsung.game.ui.panels.PlayerStatsHUD;
 import com.samsung.game.utils.DebugConsole;
 
 public class PlayerHUD extends GroupWrapper {
-    private PlayerController controller;
-    private Player player;
+    private final PlayerController controller;
+    private final Player player;
 
     private InventoryController<Potion> potion_controller;
     private InventoryController<Item> item_controller;
-    Picture helmet_view;
     Picture armor_view;
+    Picture weapon_view;
 
-    EnemyStatsPanel enemy_panel;
-    PlayerStatsPanel stats_panel;
+    EnemyStatsHUD enemy_panel;
+    PlayerStatsHUD stats_panel;
 
     DescriptionPanel item_info;
-    DialogPanel dialogPanel;
+    DialogHUD dialogHUD;
 
     UIInventory potion_bar;
     UIInventory main_inventory;
 
-    DebugConsole console;
 
     public PlayerHUD(PlayerViewPort viewPort, PlayerController controller) {
         this.controller = controller;
@@ -58,14 +57,11 @@ public class PlayerHUD extends GroupWrapper {
             }
             else if (item instanceof PlayerEquipable) {
                 player.inventory.setItemOnHand((PlayerEquipable<? super Entity>) item);
+                weapon_view.setPicture(item.getTexture());
             }
             else if (item instanceof Armour) {
                 player.inventory.setArmour((Armour) item);
-                armor_view.setPicture(item.getIconTexture());
-            }
-            else if (item instanceof Helmet) {
-                player.inventory.setHelmet((Helmet) item);
-                helmet_view.setPicture(item.getIconTexture());
+                armor_view.setPicture(item.getTexture());
             }
         }, "equip");
 
@@ -104,34 +100,34 @@ public class PlayerHUD extends GroupWrapper {
 //        health.setBounds(Gdx.graphics.getWidth() - 100, Gdx.graphics.getHeight() - 50, 0, 0);
 //        stamina = new PxFont(player.getStamina(), 25);
 //        stamina.setBounds(Gdx.graphics.getWidth() - 100, Gdx.graphics.getHeight() - 100, 0, 0);
-        stats_panel = new PlayerStatsPanel(controller.getPlayer());
+        stats_panel = new PlayerStatsHUD(controller.getPlayer());
         stats_panel.setBounds(viewPort.viewport_width - 200, viewPort.viewport_height - 125, 175, 100);
         //stats_panel.setPosition(Gdx.graphics.getWidth() - 225, Gdx.graphics.getHeight() - 125, Align.topLeft);
 
-        enemy_panel = new EnemyStatsPanel();
+        enemy_panel = new EnemyStatsHUD();
         enemy_panel.setWidth(150);
         enemy_panel.setHeight(40);
         enemy_panel.setCenterX(viewPort.viewport_width / 2f);
         enemy_panel.setY(viewPort.viewport_height - enemy_panel.getHeight() - 25);
 
-        helmet_view = new Picture(player.inventory.helmet.getIconTexture());
-        armor_view = new Picture(player.inventory.armor.getIconTexture());
-
-        helmet_view.setSize(30, 30);
-        helmet_view.setX(25);
-        helmet_view.setY(viewPort.viewport_height - (Tile.SIZE + 25));
+        armor_view = new Picture();
+        weapon_view = new Picture();
 
         armor_view.setSize(30, 30);
         armor_view.setX(25);
-        armor_view.setY(viewPort.viewport_height - (Tile.SIZE * 2 + 35));
+        armor_view.setY(viewPort.viewport_height - (Tile.SIZE + 35));
+
+        weapon_view.setSize(30, 30);
+        weapon_view.setX(80);
+        weapon_view.setY(viewPort.viewport_height - (Tile.SIZE + 35));
 
 //        enemyHealth = new PxFont(0, 25);
 //        enemyHealth.setX(Gdx.graphics.getWidth() / 2f);
 //        enemyHealth.setY(Gdx.graphics.getHeight() - 45);
 
-        dialogPanel = new DialogPanel();
-        dialogPanel.setBounds(viewPort.viewport_width / 2f - 125, viewPort.viewport_height - 125,  250, 100);
-        dialogPanel.setVisible(false);
+        dialogHUD = new DialogHUD();
+        dialogHUD.setBounds(viewPort.viewport_width / 2f - 125, viewPort.viewport_height - 125,  250, 100);
+        dialogHUD.setVisible(false);
 
 //        console = new DebugConsole();
 //        console.setX(400);
@@ -140,19 +136,19 @@ public class PlayerHUD extends GroupWrapper {
 //        addActor(console);
         addActor(enemy_panel);
         addActor(stats_panel);
-        addActor(dialogPanel);
+        addActor(dialogHUD);
         addActor(main_inventory);
         addActor(potion_bar);
 //        addActor(health);
 //        addActor(stamina);
-        addActor(helmet_view);
+        addActor(weapon_view);
         addActor(armor_view);
         addActor(item_info);
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        stats_panel.setStats(player.getHealth(), player.stamina, player.level);
+        stats_panel.setStats(player.getHealth(), player.getMana(), player.level);
         if (controller.current_entity == null || controller.current_entity instanceof Enemy)
             enemy_panel.setEnemy((Enemy) controller.current_entity);
         main_inventory.update();

@@ -20,7 +20,7 @@ public class ProjectileManager<T extends Projectile> {
             current_projectile = projectile;
             projectile.update();
 
-            if (projectile.destroyed || projectile.getTime() >= projectile.limit) {
+            if (projectile.destroyed || projectile.getTime() >= projectile.time_bound) {
                 to_destroy.add(projectile);
             }
 
@@ -34,7 +34,6 @@ public class ProjectileManager<T extends Projectile> {
         }
 
         to_destroy.clear();
-        System.out.println(projectiles.size());
     }
 
     public void add(T projectile) {

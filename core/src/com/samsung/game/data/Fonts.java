@@ -11,13 +11,11 @@ import java.util.Map;
 
 public class Fonts {
     public static final String FONTS = "font/";
-    private final FreeTypeFontGenerator pixelFontGenerator =
-            new FreeTypeFontGenerator(Gdx.files.internal("font/pixel-font.ttf"));
     private final Map<Type, BitmapFont> fonts;
     private final AssetManager font_manager;
 
     public enum Type {
-        PxFont10, PxFont20, PxBlackFont10;
+        PxFontTitle, PxFont10, PxFont20, PxBlackFont10;
     }
 
     public Fonts() {
@@ -30,6 +28,7 @@ public class Fonts {
         fonts.put(Type.PxFont10, new BitmapFont(Gdx.files.internal(FONTS+"pixel-font-10.fnt")));
         fonts.put(Type.PxFont20, new BitmapFont(Gdx.files.internal(FONTS+"pixel-font-20.fnt")));
         fonts.put(Type.PxBlackFont10, new BitmapFont(Gdx.files.internal(FONTS+"pixel-font-10.fnt")));
+        fonts.put(Type.PxFontTitle, new BitmapFont(Gdx.files.internal(FONTS+"pixel-font-title.fnt")));
 
         fonts.get(Type.PxBlackFont10).setColor(Color.BLACK);
     }

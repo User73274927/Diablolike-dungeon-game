@@ -13,11 +13,10 @@ public abstract class Item extends ActorWrapper {
     protected Rectangle size;
 
     public boolean visible;
-    protected Texture icon_texture;
 
     public Item() {
         size = new Rectangle();
-        texture = icon_texture = new Texture("sprites/unknown.png");
+        texture = new Texture("sprites/unknown.png");
     }
 
     public void drop(float x, float y) {
@@ -30,10 +29,6 @@ public abstract class Item extends ActorWrapper {
         this.drop(player.getCenterX(), player.getCenterY());
     }
 
-    public Texture getIconTexture() {
-        return icon_texture;
-    }
-
     protected void setItemSize(int height) {
         size.width = (int) GameUtils.relatedFrom(size.height, size.width, height);
         size.height = height;
@@ -42,6 +37,10 @@ public abstract class Item extends ActorWrapper {
     @Override
     public void draw(Batch batch, float pa) {
         batch.draw(texture, getX(), getY(), size.width, size.height);
+    }
+
+    public Texture getTexture() {
+        return texture;
     }
 
     public String getItemName() {

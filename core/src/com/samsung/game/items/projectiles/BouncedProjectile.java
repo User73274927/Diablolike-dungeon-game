@@ -1,8 +1,7 @@
 package com.samsung.game.items.projectiles;
 
-import com.badlogic.gdx.math.Vector2;
 import com.samsung.game.DGame;
-import com.samsung.game.effects.Burst;
+import com.samsung.game.data.Textures;
 import com.samsung.game.engine.RigidBody;
 import com.samsung.game.engine.Side;
 import com.samsung.game.entities.Enemy;
@@ -14,18 +13,17 @@ public class BouncedProjectile extends Projectile {
 
     public BouncedProjectile(Entity owner) {
         super(owner);
-        texture = DGame.textures.getTexture("projectile-1.png");
+        texture = DGame.textures.getTexture(Textures.PROJECTILES+"energy-projectile.png");
         body.flag_wallIgnore = true;
 
         body.box.width = 10;
         body.box.height = 10;
-        limit = 10;
+        time_bound = 10;
 
         body.addWallTouchedListener(new RigidBody.WallTouchedListener() {
             @Override
             public void touched(Wall wall) {
                 Side side = wall.defineSideFrom(body.getCenterX(), body.getCenterY());
-                System.out.println(side);
 
                 switch (side) {
                     case NORTH:
@@ -44,14 +42,12 @@ public class BouncedProjectile extends Projectile {
     @Override
     public void onCreate() {
         super.onCreate();
-        setDamageBounds(10, 20);
         body.flag_wallIgnore = true;
     }
 
     @Override
     public void acceptDamage(Enemy enemy) {
         enemy.putDamage(getDamage());
-        DGame.data.effects.add(new Burst(new Vector2(body.getCenterX(), body.getCenterY()), 30));
     }
 
     @Override
@@ -61,6 +57,10 @@ public class BouncedProjectile extends Projectile {
 
     @Override
     public Projectile clone() {
-        return new BouncedProjectile(owner);
+        Projectile pr = new BouncedProjectile(owner);
+        pr.setDamageBounds(getMinDamage(), getMaxDamage());
+        pr.required_mana = required_mana;
+        pr.hit_chance = hit_chance;
+        return pr;
     }
 }

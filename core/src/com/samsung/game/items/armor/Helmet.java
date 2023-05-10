@@ -22,6 +22,5 @@ public class Helmet extends Armor {
 
     public Helmet(Type type) {
         texture = new Texture("sprites/helmet-example1.png");
-        icon_texture = texture;
     }
 }

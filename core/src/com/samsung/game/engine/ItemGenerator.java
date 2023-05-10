@@ -12,7 +12,10 @@ public class ItemGenerator {
     };
 
     public Potion generatePotion() {
-        return Math.random() <= 0.5 ? new ManaPotion() : new HealthPotion();
+        if (Math.random() <= 0.25) {
+            return Math.random() <= 0.5 ? new ManaPotion() : new HealthPotion();
+        }
+        return null;
     }
 
 }

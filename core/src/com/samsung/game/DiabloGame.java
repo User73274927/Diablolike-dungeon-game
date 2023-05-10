@@ -25,8 +25,6 @@ public class DiabloGame extends Game {
     @Override
     public void dispose() {
         main_game.dispose();
-        save_load_screen.dispose();
-        main_game.dispose();
     }
 
     public GameScreen getMainGame() {

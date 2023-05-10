@@ -14,7 +14,7 @@ public class Npc extends Entity implements PlayerObserver {
     // private final HashMap<String, String[]> dialogs;
 
     protected String name;
-    private String[] dialog = {"Hello, my friend!", "I need your help", "Pleaseeeee!!!"};
+    private String[] dialog = {"Привет мой друг!", "Мне нужна твоя помощь", "Поооожалуйста!!!"};
 
 //    public enum NpcState {
 //        CANNOT_TALK,
@@ -78,6 +78,5 @@ public class Npc extends Entity implements PlayerObserver {
     public void execute(PlayerController controller) {
         controller.current_entity = this;
         controller.startTalk(this);
-        System.out.println("Npc is talking with player");
     }
 }

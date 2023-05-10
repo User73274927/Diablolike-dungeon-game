@@ -6,7 +6,6 @@ import com.samsung.game.map.Tile;
 
 public abstract class Potion extends Item implements PlayerUsable {
     public Potion() {
-        texture = icon_texture;
         size.width = size.height = Tile.SIZE;
     }
 
@@ -15,6 +14,8 @@ public abstract class Potion extends Item implements PlayerUsable {
         return "Potion";
     }
 
-
-
+    @Override
+    public String info() {
+        return "\n+10 every each level";
+    }
 }

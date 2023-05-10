@@ -11,7 +11,6 @@ public abstract class Armor extends Item {
 
     public Armor() {
         texture = new Texture("sprites/armor-example1.png");
-        icon_texture = texture;
         size.width = size.height = Tile.SIZE;
     }
 

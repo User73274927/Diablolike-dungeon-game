@@ -1,10 +1,8 @@
 package com.samsung.game.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.GL20;
 import com.samsung.game.DiabloGame;
 import com.samsung.game.engine.Level;
 import com.samsung.game.engine.PlayerViewPort;
@@ -13,6 +11,7 @@ import com.samsung.game.entities.player.PlayerControlField;
 import com.samsung.game.entities.player.PlayerController;
 import com.samsung.game.map.AsciiMap;
 import com.samsung.game.map.Map;
+import com.samsung.game.utils.Maps;
 import com.samsung.game.utils.TestAssets;
 
 import java.util.HashMap;
@@ -25,7 +24,7 @@ public class GameScreen extends ScreenAdapter {
     public final PlayerViewPort port;
 
     public final InputMultiplexer inputMultiplexer;
-    private final java.util.Map<String, StageWrapper> scene_dict;
+    private final java.util.Map<String, Level> scene_dict;
     private StageWrapper current_scene;
     private State state;
 
@@ -44,19 +43,20 @@ public class GameScreen extends ScreenAdapter {
         state = State.RESUME;
 
         level_nm = 0;
-        maps = new AsciiMap[3];
-        maps[1] = new AsciiMap(TestAssets.map1);
-        maps[2] = new AsciiMap(TestAssets.map2);
 
         controller = new PlayerController(this);
         player_controls = new PlayerControlField(controller);
-        port = new PlayerViewPort(controller);
+        port = new PlayerViewPort(this, controller);
 
-        scene_dict.put("level1", new Level(this, (AsciiMap) maps[1]));
+        maps = new AsciiMap[3];
+        maps[1] = new AsciiMap(TestAssets.map1, controller.getPlayer());
+        maps[2] = new AsciiMap(TestAssets.map2, controller.getPlayer());
+
+        scene_dict.put("level1", new Level(this, new AsciiMap(Maps.level1, controller.getPlayer())));
         scene_dict.put("level2", new Level(this, (AsciiMap) maps[2]));
 
 
-        current_scene = new Level(this, (AsciiMap) maps[1]).create();
+        current_scene = new Level(this, new AsciiMap(Maps.level1, controller.getPlayer())).create();
 
         inputMultiplexer.addProcessor(port);
         inputMultiplexer.addProcessor(player_controls);
@@ -78,6 +78,12 @@ public class GameScreen extends ScreenAdapter {
                 return;
             case RESUME:
         }
+
+        if (!controller.getPlayer().isEntityAlive()) {
+            port.player_info.setVisible(false);
+            port.setPanel(port.game_over_panel);
+        }
+
         current_scene.getViewport().apply();
         current_scene.act();
         current_scene.draw();
@@ -88,18 +94,14 @@ public class GameScreen extends ScreenAdapter {
 
         port.getViewport().apply();
         port.act();
-        port.update();
         port.draw();
     }
 
-    public final void changeScene(final StageWrapper scene) {
+    public final void changeScene(final Level level) {
         if (current_scene != null) {
             current_scene.dispose();
         }
-        if (current_scene instanceof Level) {
-            ((Level) current_scene).create();
-        }
-        current_scene = scene;
+        current_scene = level.create();
     }
 
     public final void changeScene(String key) {

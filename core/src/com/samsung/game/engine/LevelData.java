@@ -1,6 +1,7 @@
 package com.samsung.game.engine;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.samsung.game.effects.Effect;
 import com.samsung.game.entities.Entity;
 import com.samsung.game.items.Item;
 import com.samsung.game.map.AsciiMap;
@@ -12,7 +13,7 @@ public class LevelData {
     public final PhysicField field;
     public final AsciiMap map;
     public final Set<Item> visible_items;
-    public final Set<Drawable> effects;
+    public final Set<Effect> effects;
     public final Set<Entity> allEntity;
 
     final Group entityHandler;

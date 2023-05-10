@@ -152,6 +152,10 @@ public class RigidBody implements Collideable {
         return velocity;
     }
 
+    public void setVel(Vector2 velocity) {
+        this.velocity = velocity;
+    }
+
     @Override
     public float getWidth() {
         return box.width;

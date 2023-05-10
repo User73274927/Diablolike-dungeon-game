@@ -1,7 +1,6 @@
 package com.samsung.game.engine;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -10,7 +9,9 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.samsung.game.DGame;
+import com.samsung.game.effects.Effect;
 import com.samsung.game.engine.gdx.StageWrapper;
+import com.samsung.game.entities.Enemy;
 import com.samsung.game.entities.Monster;
 import com.samsung.game.entities.Entity;
 import com.samsung.game.entities.Npc;
@@ -19,6 +20,7 @@ import com.samsung.game.entities.player.PlayerControlField;
 import com.samsung.game.entities.player.PlayerController;
 import com.samsung.game.items.Item;
 import com.samsung.game.items.potions.HealthPotion;
+import com.samsung.game.items.projectiles.Projectile;
 import com.samsung.game.map.AsciiMap;
 import com.samsung.game.screens.GameScreen;
 
@@ -30,7 +32,6 @@ public class Level extends StageWrapper {
     private final float WORLD_WIDTH = 640; // 16
     private final float WORLD_HEIGHT = 320; // 9
 
-    ShapeRenderer batch;
     final Viewport viewport;
     final Camera game_camera = new OrthographicCamera();
     final PlayerController controller;
@@ -43,8 +44,9 @@ public class Level extends StageWrapper {
         this.game = game;
         this.map = map;
         map.load();
-        data = new LevelData(map);
 
+        data = new LevelData(map);
+        DGame.projectiles = new ProjectileManager<>();
         this.controls = game.player_controls;
         this.controller = game.controller;
         this.player = controller.getPlayer();
@@ -61,28 +63,19 @@ public class Level extends StageWrapper {
     }
 
     public Level create() {
-        Monster monster1 = new Monster(player, 400, 200);
-        Monster monster2 = new Monster(player, 150, 30);
-        Monster monster3 = new Monster(player, 200, 100);
-        Monster bandit4 = new Monster(player, 300, 75);
-        Npc npc = new Npc(50, 350);
-
-        data.addEntity(monster1);
-        data.addEntity(monster2);
-        data.addEntity(monster3);
-        data.addEntity(bandit4);
-        data.addEntity(npc);
         data.addEntity(controller.getPlayer());
 
-        data.visible_items.add(new HealthPotion());
-        data.visible_items.add(new HealthPotion());
-        data.visible_items.add(new HealthPotion());
-        data.visible_items.add(new HealthPotion());
-        data.visible_items.add(new HealthPotion());
-        data.visible_items.add(new HealthPotion());
-        data.visible_items.add(new HealthPotion());
+        for (Entity entity : map.getEntities()) {
+            data.addEntity(entity);
 
+            if (entity instanceof Enemy) {
+                ((Enemy) entity).setAgent(controller.getPlayer(), 0);
+            }
+        }
 
+        Npc npc = new Npc(50, 350);
+
+        data.addEntity(npc);
 
         DGame.data = data;
         return this;
@@ -96,6 +89,7 @@ public class Level extends StageWrapper {
 
         game_camera.position.set(player.getCenterX(), player.getCenterY(), 0);
         data.field.update();
+        DGame.projectiles.update();
 
         Iterator<Entity> iterator = DGame.data.allEntity.iterator();
 
@@ -116,8 +110,18 @@ public class Level extends StageWrapper {
         for (Item item : data.visible_items) {
             item.draw(getBatch(), 0f);
         }
-        for (Drawable d : data.effects) {
+
+        for (Projectile pr : DGame.projectiles.getProjectiles()) {
+            pr.draw(getBatch(), 0f);
+        }
+
+        Iterator<Effect> iter = DGame.data.effects.iterator();
+        while (iter.hasNext()) {
+            Effect d = iter.next();
             d.draw(getBatch());
+            if (d.isDisabled()) {
+                iter.remove();
+            }
         }
 
         getBatch().end();
@@ -134,4 +138,5 @@ public class Level extends StageWrapper {
         data.removeAllEntity();
         super.dispose();
     }
+
 }

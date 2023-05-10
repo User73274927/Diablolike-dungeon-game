@@ -1,5 +1,9 @@
 package com.samsung.game.items.weapon;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.samsung.game.DGame;
+import com.samsung.game.data.Textures;
 import com.samsung.game.engine.Damage;
 import com.samsung.game.entities.Enemy;
 import com.samsung.game.entities.Entity;
@@ -8,27 +12,49 @@ import com.samsung.game.items.PlayerEquipable;
 
 import java.util.Set;
 
-public abstract class ColdWeapon extends Weapon implements Damage, PlayerEquipable<Entity> {
-    protected float attack_distance = 5;
-    protected Set<Entity> entitySet;
+public class ColdWeapon extends Weapon implements Damage, PlayerEquipable<Entity> {
+    protected float attack_distance = 35;
+    private float time;
 
-    public ColdWeapon(Set<Entity> entitySet) {
-        this.entitySet = entitySet;
+    public ColdWeapon(Entity owner) {
+        this.owner = owner;
+        texture = DGame.textures.getTexture(Textures.SPRITES+"knife.png");
+        name = "knife";
+        setDamageBounds(10, 15);
+    }
+
+    @Override
+    public void setOwner(Entity owner) {
+        this.owner = owner;
     }
 
     public void onTouch(float screen_x, float screen_y) {
-        for (Entity entity : entitySet) {
-            if (entity == owner) {
-                continue;
-            }
-            float cx = Math.abs(owner.getCenterX() - entity.getCenterX()),
-                    cy = Math.abs(owner.getCenterY() - entity.getCenterY());
+        for (Entity entity : DGame.data.allEntity) {
+            if (entity.intersects(screen_x, screen_y)) {
+                if (entity == owner) {
+                    continue;
+                }
+                float cx = Math.abs(owner.getCenterX() - entity.getCenterX()),
+                        cy = Math.abs(owner.getCenterY() - entity.getCenterY());
 
-            if (Math.sqrt(cx + cy) <= attack_distance) {
-                acceptDamage(entity);
-                break;
+                if (Math.sqrt(cx * cx + cy * cy) <= attack_distance && time >= 0.3) {
+                    acceptDamage(entity);
+                    time = 0;
+                    break;
+                }
             }
         }
+    }
+
+    @Override
+    public void draw(Batch batch, float pa) {
+        time += Gdx.graphics.getDeltaTime();
+        super.draw(batch, pa);
+    }
+
+    @Override
+    public Integer getRequireMana() {
+        return 0;
     }
 
     @Override
@@ -39,5 +65,10 @@ public abstract class ColdWeapon extends Weapon implements Damage, PlayerEquipab
     @Override
     public void acceptDamage(Player player) {
         player.putDamage(getDamage());
+    }
+
+    @Override
+    public String info() {
+        return "damage: " + getMinDamage() + "-" + getMinDamage() + " \n";
     }
 }

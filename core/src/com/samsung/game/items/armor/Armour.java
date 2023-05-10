@@ -23,7 +23,7 @@ public class Armour extends Armor {
 
     public Armour(Type type) {
         name = type.name;
-        texture = icon_texture = type.armor_texture;
+        texture = type.armor_texture;
         protection = type.protection;
     }
 }

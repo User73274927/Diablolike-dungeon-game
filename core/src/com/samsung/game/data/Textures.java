@@ -8,14 +8,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Textures {
-    public static final String BUTTONS = "buttons/";
-    public static final String FONT = "buttons/";
     public static final String UI = "ui/";
-
     public static final String SPRITES = "sprites/";
-
+    public static final String PROJECTILES = "projectiles/";
     public static final String TILES = "tiles/";
     public static final String TEXTURE_PACK1 = TILES+"texture-pack1/";
+
 
     private final Map<String, Texture> allTextures;
     private final AssetManager manager;
@@ -32,11 +30,24 @@ public class Textures {
         addTexture(TILES+"wall-example1.png");
         addTexture(TILES+"next-level.png");
 
-        addTexture("projectile-1.png");
+        addTexture(PROJECTILES+"bullet.png");
+        addTexture(PROJECTILES+"energy-projectile.png");
+        addTexture(PROJECTILES+"bullet-burst.png");
+
+        addTexture(SPRITES+"knife.png");
+        addTexture(SPRITES+"fire-weapon.png");
+        addTexture(SPRITES+"energy-weapon.png");
+        addTexture(SPRITES+"rocket-launcher.png");
+
+        addTexture(SPRITES+"burst-effect.png");
+
+        addTexture(SPRITES+"mana-potion.png");
+        addTexture(SPRITES+"health-potion.png");
 
         addTexture(SPRITES+"player-sheet-left.png");
         addTexture(SPRITES+"player-sheet-right.png");
         addTexture(SPRITES+"player-sheet-attack.png");
+        addTexture(SPRITES+"player-example1.png");
 
         addTexture(SPRITES+"monster1-idle-left.png");
         addTexture(SPRITES+"monster1-idle-right.png");
@@ -46,6 +57,9 @@ public class Textures {
         addTexture(UI+"button-previous.png");
         addTexture(UI+"plain-button.png");
         addTexture(UI+"inventory-slot-frame.png");
+
+        addTexture(UI+"button-go-menu-pressed.png");
+        addTexture(UI+"button-go-menu-realized.png");
 
     }
 

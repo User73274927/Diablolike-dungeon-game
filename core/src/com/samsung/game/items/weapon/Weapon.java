@@ -1,5 +1,6 @@
 package com.samsung.game.items.weapon;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.samsung.game.entities.Entity;
 import com.samsung.game.items.Item;
 
@@ -7,7 +8,7 @@ import java.util.Random;
 
 public abstract class Weapon extends Item {
     protected Entity owner;
-    protected Random hit_rand;
+    private Random hit_rand;
 
     private int damage_min;
     private int damage_max;
@@ -69,7 +70,6 @@ public abstract class Weapon extends Item {
     @Override
     public String info() {
         return "damage: " + damage_min + "-" + damage_max + " \n" +
-                "require level: " + require_level + "\n" +
                 "hit chance: " + (int) (hit_chance * 100) + "\n";
     }
 }

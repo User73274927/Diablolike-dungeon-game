@@ -22,7 +22,7 @@ public class UIScale extends UIComponent {
         float x = getX(), y = getY();
         int nm = max_num / unit_count;
         for (int i = 0; i < unit_count; i++) {
-            if (num >= 0) {
+            if (num > 0) {
                 batch.draw(unit, x, y, unit_size, unit_size);
                 num -= nm;
             } else {

@@ -10,18 +10,20 @@ import com.samsung.game.entities.Enemy;
 import com.samsung.game.entities.Entity;
 import com.samsung.game.entities.player.Player;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import static com.samsung.game.data.Textures.SPRITES;
 
-public class Burst implements Drawable, Damage {
-    private Texture burst_texture;
-    private Vector2 pos;
-    private int radius;
-    private int radius_max;
+public class Burst extends IncreasingRectEffect implements Damage {
+    private Set<Entity> undamaged;
+
 
     public Burst(Vector2 pos, int radius_max) {
-        this.pos = pos;
-        this.radius_max = radius_max;
-        burst_texture = new Texture(SPRITES+"player-example1.png");
+        super(DGame.textures.getTexture(SPRITES+"burst-effect.png"), pos, radius_max);
+        undamaged = new HashSet<>();
+        undamaged.addAll(DGame.data.allEntity);
     }
 
     @Override
@@ -36,25 +38,17 @@ public class Burst implements Drawable, Damage {
 
     @Override
     public void draw(Batch batch) {
-        batch.draw(burst_texture, pos.x-radius, pos.y-radius, radius*2, radius*2);
+        super.draw(batch);
+        Iterator<Entity> itr = undamaged.iterator();
+        while (itr.hasNext()) {
+            Entity entity = itr.next();
 
-        for (Entity entity : DGame.data.allEntity) {
-            float delta_s = pos.sub(entity.getCenterX(), entity.getCenterY()).len();
-            if (delta_s <= radius) {
+            float delta_s = pos.cpy().sub(entity.getCenterX(), entity.getCenterY()).len();
+            if (delta_s <= getRadius()) {
                 acceptDamage(entity);
+                itr.remove();
             }
         }
-
-        radius += 2;
     }
 
-    @Override
-    public float getX() {
-        return pos.x;
-    }
-
-    @Override
-    public float getY() {
-        return pos.y;
-    }
 }

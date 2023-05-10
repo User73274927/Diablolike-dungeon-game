@@ -14,7 +14,7 @@ import com.samsung.game.screens.GameScreen;
 import com.samsung.game.ui.JoyStick;
 import com.samsung.game.ui.UIInventory;
 import com.samsung.game.ui.panels.DescriptionPanel;
-import com.samsung.game.ui.panels.DialogPanel;
+import com.samsung.game.ui.panels.DialogHUD;
 import com.samsung.game.utils.DebugConsole;
 import com.samsung.game.utils.GameUtils;
 
@@ -58,24 +58,17 @@ public class PlayerController extends InputAdapter {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if (isTalking) {
-            return false;
-        }
         if (button == Input.Buttons.LEFT) {
             touch_pos.set(screenX, screenY, 0);
             camera.unproject(touch_pos);
             player.updateClick(touch_pos.x, touch_pos.y);
-            DebugConsole.addMessage("tl", "tile: " + Arrays.toString(GameUtils.findTileByCoords(
-                    DGame.data.map.getTiledMap(), (int) touch_pos.x, (int) touch_pos.y)));
-            DebugConsole.addMessage("msc",
-                    "mouse x: " + Math.round(touch_pos.x) +
-                            "mouse y: " + Math.round(touch_pos.y));
-            //test
+
             for (Entity entity : DGame.data.allEntity) {
                 if (entity instanceof PlayerObserver) {
                     if (entity.intersects(touch_pos.x, touch_pos.y)) {
                         current_entity = entity;
                         ((PlayerObserver) entity).execute(this);
+                        isTalking = playerHUD.dialogHUD.isVisible();
                         return false;
                     }
                 }
@@ -106,7 +99,7 @@ public class PlayerController extends InputAdapter {
     }
 
     public void startTalk(Npc npc) {
-        DialogPanel dpn = playerHUD.dialogPanel;
+        DialogHUD dpn = playerHUD.dialogHUD;
         npc.talk(getPlayer());
         dpn.setDialogText(npc.getDialog());
         dpn.setVisible(true);
@@ -137,11 +130,4 @@ public class PlayerController extends InputAdapter {
         this.camera = camera;
     }
 
-    public void save() {
-
-    }
-
-    public void load() {
-
-    }
 }

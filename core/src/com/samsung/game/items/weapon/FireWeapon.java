@@ -1,51 +1,54 @@
 package com.samsung.game.items.weapon;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.samsung.game.DGame;
+import com.samsung.game.data.Textures;
 import com.samsung.game.engine.ProjectileManager;
 import com.samsung.game.entities.Enemy;
 import com.samsung.game.entities.Entity;
 import com.samsung.game.entities.player.Player;
 import com.samsung.game.items.PlayerEquipable;
+import com.samsung.game.items.projectiles.BouncedProjectile;
 import com.samsung.game.items.projectiles.Projectile;
 
 public class FireWeapon extends Weapon implements PlayerEquipable<Entity> {
-    protected ProjectileManager<? super Projectile> handler;
+    protected Sound shoot_sound;
+    protected float delta_time;
+    protected float time;
+    protected int velocity;
     private Projectile projectile;
-    private float delta_time;
-    private int velocity;
 
-    public FireWeapon() {
+
+    public FireWeapon(Entity owner) {
         super();
-        name = "Energy Weapon";
+        texture = DGame.textures.getTexture(Textures.SPRITES+"fire-weapon.png");
+        shoot_sound = Gdx.audio.newSound(Gdx.files.internal("shoot-example1.mp3"));
+        name = "Fire Weapon";
         velocity = 10;
-        handler = new ProjectileManager<>();
-        setDamageBounds(1, 2);
+        delta_time = 0.08f;
+        setProjectile(new Bullet(owner));
+        setDamageBounds(5, 15);
     }
 
-    public void shoot(Projectile pr, float angle) {
-        if (delta_time >= 0.2) {
+
+    public boolean shoot(Projectile pr, float angle) {
+        if (time >= delta_time) {
             pr.setDamageBounds(getMinDamage(), getMaxDamage());
             pr.speed = velocity;
             pr.angle = angle;
-            handler.add(pr);
-            delta_time = 0;
+            DGame.projectiles.add(pr);
+            time = 0;
+            return true;
         }
-    }
-
-    public void shoot(float angle) {
-        this.shoot(new M762(owner), angle);
+        return false;
     }
 
     @Override
     public void draw(Batch batch, float pa) {
-        handler.update();
-        delta_time += Gdx.graphics.getDeltaTime();
-
-        for (Projectile p : handler.getProjectiles()) {
-            p.draw(batch, 0f);
-        }
+        time += Gdx.graphics.getDeltaTime();
+        super.draw(batch, pa);
     }
 
     @Override
@@ -56,28 +59,48 @@ public class FireWeapon extends Weapon implements PlayerEquipable<Entity> {
     @Override
     public final void onTouch(float screen_x, float screen_y) {
         float x = screen_x - getX(), y = screen_y - getY();
-        shoot(projectile.clone(), (float) Math.atan2(y, x));
-        System.out.println();
-        System.out.println((float) Math.atan2(y, x));
-        System.out.println();
+        Projectile new_pr = projectile.clone();
+
+        boolean isShoot;
+        if (projectile != null)
+            isShoot = shoot(new_pr, (float) Math.atan2(y, x));
+        else
+            isShoot = shoot(new Bullet(owner), (float) Math.atan2(y, x));
+
+        if (owner instanceof Player && isShoot) {
+            ((Player) owner).addMana(-new_pr.required_mana);
+            shoot_sound.play(1f);
+        }
     }
 
     public void setProjectile(Projectile projectile) {
         this.projectile = projectile;
+        projectile.onCreate();
         this.hit_chance = projectile.hit_chance;
+        setDamageBounds(projectile.getMinDamage(), projectile.getMaxDamage());
     }
 
-    class M762 extends Projectile {
-        public M762(Entity owner) {
+    @Override
+    public Integer getRequireMana() {
+        return projectile.required_mana;
+    }
+
+    static class Bullet extends Projectile {
+        public Bullet(Entity owner) {
             super(owner);
-            texture = DGame.textures.getTexture("projectile-1.png");
+            texture = DGame.textures.getTexture(Textures.PROJECTILES+"bullet.png");
+            hit_chance = 0.75f;
+            required_mana = 1;
+
             body.box.width = 10;
             body.box.height = 10;
         }
 
         @Override
         public Projectile clone() {
-            return new M762(this.owner);
+            Projectile pr = new Bullet(owner);
+            pr.setDamageBounds(getMinDamage(), getMaxDamage());
+            return pr;
         }
 
         @Override
@@ -91,4 +114,10 @@ public class FireWeapon extends Weapon implements PlayerEquipable<Entity> {
         }
     }
 
+    @Override
+    public String info() {
+        return super.info() +
+                "require mana: " + projectile.required_mana + "\n" +
+                "speed: " + velocity;
+    }
 }

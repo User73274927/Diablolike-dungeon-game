@@ -127,7 +127,7 @@ public class UIInventory extends GroupWrapper {
 
             inventory.getItem(col, row).ifPresent(item -> {
                 if (col != -1 && row != -1) {
-                    batch.draw(item.getIconTexture(), getX(), getY(), getWidth(), getHeight());
+                    batch.draw(item.getTexture(), getX(), getY(), getWidth(), getHeight());
                 }
             });
         }

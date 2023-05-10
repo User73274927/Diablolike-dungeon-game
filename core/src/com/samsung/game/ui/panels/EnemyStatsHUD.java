@@ -8,15 +8,16 @@ import com.samsung.game.data.Fonts;
 import com.samsung.game.engine.gdx.GroupWrapper;
 import com.samsung.game.entities.Enemy;
 import com.samsung.game.ui.UIScale;
+import com.samsung.game.utils.GameUtils;
 
-public class EnemyStatsPanel extends GroupWrapper {
+public class EnemyStatsHUD extends GroupWrapper {
     private final String PATH = "player-stats-asset/";
     BitmapFont name_painter;
     Texture health_unit = new Texture(PATH + "health-scale-unit.png");
     private UIScale scale;
     private Enemy enemy;
 
-    public EnemyStatsPanel() {
+    public EnemyStatsHUD() {
         scale = new UIScale(health_unit);
         name_painter = DGame.fonts.getFont(Fonts.Type.PxFont20);
         setHeight(scale.getHeight() + 30);
@@ -27,9 +28,9 @@ public class EnemyStatsPanel extends GroupWrapper {
     public void draw(Batch batch, float parentAlpha) {
         if (enemy != null) {
             scale.num = enemy.getHealth();
-            scale.max_num = enemy.MAX_HEALTH;
+            scale.max_num = enemy.max_health;
             String name = enemy.getEnemyName();
-            name_painter.draw(batch, name, getCenterX()-(float) (name.length() * 5)/2, getY()+getHeight());
+            name_painter.draw(batch, name, getCenterX()-GameUtils.calculateFntTextWidth(name, 9f)/2f, getY()+getHeight());
             super.draw(batch, parentAlpha);
         }
     }

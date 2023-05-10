@@ -5,12 +5,15 @@ import com.samsung.game.data.Animations;
 import com.samsung.game.data.Fonts;
 import com.samsung.game.data.Textures;
 import com.samsung.game.engine.LevelData;
+import com.samsung.game.engine.ProjectileManager;
+import com.samsung.game.items.projectiles.Projectile;
 
 public class DGame {
     public static LevelData data;
     public static Textures textures;
     public static Animations animations;
     public static Fonts fonts;
+    public static ProjectileManager<? super Projectile> projectiles;
 
     public static float getScreenWidth() {
         return Gdx.graphics.getWidth();

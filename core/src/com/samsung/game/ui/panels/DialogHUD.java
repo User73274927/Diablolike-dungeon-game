@@ -11,7 +11,7 @@ import com.samsung.game.ui.UIButton;
 
 import static com.samsung.game.data.Textures.UI;
 
-public class DialogPanel extends GroupWrapper {
+public class DialogHUD extends GroupWrapper {
     private BitmapFont text_painter;
     private Texture background;
     private String[] dialog_text;
@@ -22,10 +22,8 @@ public class DialogPanel extends GroupWrapper {
     private UIButton close_button;
     private UIButton next_button;
     private UIButton previous_button;
-    private UIButton ok_button;
-    private UIButton cancel_button;
 
-    public DialogPanel() {
+    public DialogHUD() {
         addListener(new ClickListener());
         background = new Texture("sprites/player-example1.png");
         dialog_text = new String[] {"Hello world", "How are you", "I need your help, please"};

@@ -5,6 +5,7 @@ import com.samsung.game.engine.Side;
 import com.samsung.game.map.Tile;
 
 import java.awt.geom.Line2D;
+import java.util.function.IntPredicate;
 
 public class GameUtils {
     public static float relatedFrom(float a, float b, float an) {
@@ -48,13 +49,40 @@ public class GameUtils {
         return Line2D.linesIntersect(l1x1, l1y1, l1x2, l1y2, l2x1, l2y1, l2x2, l2y2);
     }
 
-    public static <T> int[] findTileByCoords(T[][] map, int x, int y) {
+    public static int[] findIndexesOfTileByCoords(char[][] map, int x, int y) {
         int row = 0, col = 0;
 
         if (x > 0 || y > 0) {
-            row = x / Tile.SIZE;
             col = map.length - y / Tile.SIZE - 1;
+            row = x / Tile.SIZE;
         }
         return new int[] {col, row};
     }
+
+    public static char findTileByCoords(char[][] map, int x, int y) {
+        try {
+            int[] indexes = findIndexesOfTileByCoords(map, x, y);
+            System.out.println(indexes[0] + " " + indexes[1]);
+            return map[indexes[0]][indexes[1]];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
+            return map[0][0];
+        }
+    }
+
+    public static boolean inBounds(float a, float b, float c) {
+        return a >= b && a < c;
+    }
+
+    public static float calculateFntTextWidth(String text, float font_width) {
+        int spaces_count = (int) text.chars().filter(new IntPredicate() {
+            @Override
+            public boolean test(int value) {
+                return value == ' ';
+            }
+        }).count();
+
+        return (text.length()-spaces_count)*(font_width) + spaces_count*font_width/2f;
+    }
+
 }

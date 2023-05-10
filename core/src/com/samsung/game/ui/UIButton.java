@@ -28,17 +28,17 @@ public class UIButton extends UIComponent {
         this.action = action;
         addListener(new ClickListener() {
             @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                pressed = true;
-            }
-
-            @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 if (click_action != null) {
                     click_action.action();
                 }
-                pressed = false;
+                pressed = true;
                 return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                pressed = false;
             }
 
         });

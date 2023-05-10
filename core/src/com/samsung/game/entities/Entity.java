@@ -20,10 +20,10 @@ public abstract class Entity extends ActorWrapper implements Collideable, Lifecy
     public static final int MAX_LEVEL = 100;
     public static final float MAX_SPEED = Tile.SIZE;
     public static final float MAX_RESISTANCE = 80;
-    public int MAX_HEALTH = 100;
+    public int max_health = 100;
 
     protected final HashMap<String, Animation<TextureRegion>> animationDict;
-    private Animation<TextureRegion> current_animation;
+    protected Animation<TextureRegion> current_animation;
     private Deque<Animation<TextureRegion>> animation_queue;
     protected Texture default_texture;
     private float time;
@@ -33,7 +33,7 @@ public abstract class Entity extends ActorWrapper implements Collideable, Lifecy
     protected RigidBody body;
 
     protected State state;
-    protected Integer health = 1;
+    protected Integer health;
 
     public enum State {
         PASSIVE, ACTIVE, STAN, ATTACKING, TALKING
@@ -132,7 +132,7 @@ public abstract class Entity extends ActorWrapper implements Collideable, Lifecy
     }
 
     public void addHealth(int points) {
-        health = Math.min(MAX_HEALTH, health + points);
+        health = Math.min(max_health, health + points);
     }
 
     public boolean isEntityAlive() {
