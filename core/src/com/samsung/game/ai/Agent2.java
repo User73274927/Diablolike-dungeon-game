@@ -86,8 +86,8 @@ public class Agent2 {
     }
 
     private Vector2 generateDirectionVector() {
-        float x = random.nextInt(1, 4);
-        float y = random.nextInt(1, 4);
+        float x = random.nextInt(0, 5);
+        float y = random.nextInt((x == 0) ? 1 : 0, 5);
         return new Vector2(x, y);
     }
 

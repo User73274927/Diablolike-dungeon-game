@@ -27,9 +27,9 @@ public class FireWeapon extends Weapon implements PlayerEquipable<Entity> {
         shoot_sound = Gdx.audio.newSound(Gdx.files.internal("shoot-example1.mp3"));
         name = "Fire Weapon";
         velocity = 10;
-        delta_time = 0.08f;
+        delta_time = 0.1f;
         setProjectile(new Bullet(owner));
-        setDamageBounds(5, 15);
+        setDamageBounds(15, 20);
     }
 
 

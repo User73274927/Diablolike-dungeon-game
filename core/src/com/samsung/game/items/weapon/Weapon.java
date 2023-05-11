@@ -12,8 +12,6 @@ public abstract class Weapon extends Item {
 
     private int damage_min;
     private int damage_max;
-
-    private int require_level;
     public double hit_chance;
 
     public Weapon() {
@@ -24,12 +22,6 @@ public abstract class Weapon extends Item {
     public void setDamageBounds(int min, int max) {
         this.damage_min = Math.min(min, max);
         this.damage_max = Math.max(min, max);
-    }
-
-    public void setRequireLevel(int level) {
-        if (level <= Entity.MAX_LEVEL) {
-            this.require_level = level;
-        }
     }
 
     public int getDamage() {
@@ -53,7 +45,7 @@ public abstract class Weapon extends Item {
     public float getX() {
         if (owner == null) {
             visible = false;
-            return -1;
+            return super.getX();
         }
         return owner.getCenterX();
     }
@@ -62,7 +54,7 @@ public abstract class Weapon extends Item {
     public float getY() {
         if (owner == null) {
             visible = false;
-            return -1;
+            return super.getY();
         }
         return owner.getCenterY();
     }

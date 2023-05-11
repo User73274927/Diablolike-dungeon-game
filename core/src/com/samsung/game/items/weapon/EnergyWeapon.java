@@ -22,7 +22,7 @@ public class EnergyWeapon extends FireWeapon {
 
         projectile.setDamageBounds(25, 50);
         projectile.time_bound = 4;
-        projectile.required_mana = 2;
+        projectile.required_mana = 4;
         projectile.hit_chance = 0.75f;
         setProjectile(projectile);
     }

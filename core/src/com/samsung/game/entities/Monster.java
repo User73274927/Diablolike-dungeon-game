@@ -19,19 +19,33 @@ import static com.samsung.game.data.Textures.TILES;
 
 public class Monster extends Enemy implements Damage {
     private float time;
+    private int[] damage;
 
 
     public Monster(float x, float y) {
         super(x, y);
-        init_health = 100;
         setLevel(1);
     }
 
     @Override
     public void onCreate() {
-        animationDict.put("left", DGame.animations.getAnimation("monster1-left"));
-        animationDict.put("right", DGame.animations.getAnimation("monster1-right"));
         body.MAX_VEL = new Random().nextFloat(0.2f, 4f);
+        if (body.MAX_VEL < 2) {
+            setEnemyName("monster baby");
+            damage = new int[] {5, 7};
+            body.box.width = 25;
+            body.box.height = 25;
+            init_health = 75;
+
+            animationDict.put("left", DGame.animations.getAnimation("mini-monster-left"));
+            animationDict.put("right", DGame.animations.getAnimation("mini-monster-right"));
+        } else {
+            damage = new int[] {10, 12};
+            init_health = 100;
+
+            animationDict.put("left", DGame.animations.getAnimation("monster-left"));
+            animationDict.put("right", DGame.animations.getAnimation("monster-right"));
+        }
     }
 
     @Override
@@ -57,7 +71,7 @@ public class Monster extends Enemy implements Damage {
         if (time >=  2 / body.MAX_VEL) {
             if (Math.random() <= 0.5) {
                 Random r = new Random();
-                player.putDamage(r.nextInt(9 + level, 10 + 2*level+1));
+                player.putDamage(r.nextInt(damage[0], damage[1] + 2*level+1));
             }
             time = 0;
         }
@@ -65,7 +79,7 @@ public class Monster extends Enemy implements Damage {
 
     @Override
     public void setAgent(Player target, int visible_distance) {
-        super.setAgent(target, 150);
+        super.setAgent(target, 125);
     }
 
     @Override

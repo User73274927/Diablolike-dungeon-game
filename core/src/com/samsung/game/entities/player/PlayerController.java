@@ -24,8 +24,8 @@ import java.util.Map;
 
 public class PlayerController extends InputAdapter {
     // Player tools
-    private GameScreen process;
-    private Map<ControlType, JoyStick> controls_map;
+    private GameScreen context;
+    private Map<ControlType, JoyStick> controls_dict;
 
     public final InventoryController<Item> itemInventoryController;
     public final InventoryController<Potion> potionInventoryController;
@@ -38,16 +38,14 @@ public class PlayerController extends InputAdapter {
     private final Player player;
     public Entity current_entity;
 
-    private boolean isTalking = false;
-
     private PlayerHUD playerHUD;
     private Camera camera;
     private Vector3 touch_pos;
-    int i = 0;
+    int i = 1;
 
     public PlayerController(GameScreen process) {
-        this.process = process;
-        controls_map = new HashMap<>();
+        this.context = process;
+        controls_dict = new HashMap<>();
         touch_pos = new Vector3();
         player = new Player();
 
@@ -61,14 +59,22 @@ public class PlayerController extends InputAdapter {
         if (button == Input.Buttons.LEFT) {
             touch_pos.set(screenX, screenY, 0);
             camera.unproject(touch_pos);
-            player.updateClick(touch_pos.x, touch_pos.y);
+            float x = touch_pos.x;
+            float y = touch_pos.y;
+
+            if (GameUtils.findTileByCoords(DGame.data.map.getCharMap(), (int)x, (int)y) == 'O') {
+                player.levelUp();
+                context.changeLevel("level"+player.getLevel());
+                return true;
+            }
+
+            player.updateClick(x, y);
 
             for (Entity entity : DGame.data.allEntity) {
                 if (entity instanceof PlayerObserver) {
-                    if (entity.intersects(touch_pos.x, touch_pos.y)) {
+                    if (entity.intersects(x, y)) {
                         current_entity = entity;
                         ((PlayerObserver) entity).execute(this);
-                        isTalking = playerHUD.dialogHUD.isVisible();
                         return false;
                     }
                 }
@@ -81,7 +87,7 @@ public class PlayerController extends InputAdapter {
     @Override
     public boolean keyUp(int keycode) {
         if (keycode == Input.Keys.ESCAPE) {
-            process.paused = !process.paused;
+            context.paused = !context.paused;
             return false;
         }
         if (keycode == Input.Keys.E) {
@@ -91,9 +97,6 @@ public class PlayerController extends InputAdapter {
             list.setVisible(!list.isVisible());
             potionInventoryController.setOnTouchAction(list.isVisible() ? "info" : "use");
             playerHUD.item_info.clean();
-        }
-        if (keycode == Input.Keys.R) {
-            process.changeScene("level" + ((++i % 2) - 1));
         }
         return super.keyUp(keycode);
     }
@@ -107,11 +110,11 @@ public class PlayerController extends InputAdapter {
 
     public void addControl(ControlType type, JoyStick stick) {
         player.getBody().connectJoystick(stick);
-        controls_map.put(type, stick);
+        controls_dict.put(type, stick);
     }
 
     public JoyStick getControl(ControlType type) {
-        return controls_map.get(type);
+        return controls_dict.get(type);
     }
 
     public PlayerHUD getPlayerHUD() {

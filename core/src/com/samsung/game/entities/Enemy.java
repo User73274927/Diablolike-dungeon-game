@@ -10,13 +10,12 @@ import com.samsung.game.entities.player.Player;
 import com.samsung.game.entities.player.PlayerController;
 import com.samsung.game.entities.player.PlayerObserver;
 import com.samsung.game.items.Item;
-import com.samsung.game.items.potions.Potion;
 
 public abstract class Enemy extends Entity implements PlayerObserver {
     protected Agent2 agent;
     protected Player player;
-    private Item drop_item;
-    private ItemGenerator item_generator;
+    private final Item drop_item;
+    private final ItemGenerator item_generator;
     Integer level;
     protected Integer init_health;
     private String name;
@@ -25,8 +24,7 @@ public abstract class Enemy extends Entity implements PlayerObserver {
         super(x, y);
         current_frame = new TextureRegion(new Texture("sprites/player-example1.png"));
         item_generator = new ItemGenerator();
-        Potion potion = item_generator.generatePotion();
-        drop_item = potion;
+        drop_item = item_generator.generatePotion();
         level = 1;
 //        agent.maxLinearSpeed = body.MAX_VEL;
 //        agent.maxAngularSpeed = 30;
@@ -38,10 +36,9 @@ public abstract class Enemy extends Entity implements PlayerObserver {
 //                .setDecelerationRadius(10);
 //        agent.setBehavior(arrive);
 
-        onCreate();
         String name = getClass().getName();
-        setEnemyName(name.substring(name.lastIndexOf('.')+1) +
-                " ( lvl: " + level + " )");
+        setEnemyName(name.substring(name.lastIndexOf('.')+1));
+        onCreate();
     }
 
     @Override
@@ -50,7 +47,7 @@ public abstract class Enemy extends Entity implements PlayerObserver {
     }
 
     public String getEnemyName() {
-        return name;
+        return name + " ( lvl: " + level + " )";
     }
 
     public void setEnemyName(String name) {
@@ -77,7 +74,6 @@ public abstract class Enemy extends Entity implements PlayerObserver {
     @Override
     public void execute(PlayerController controller) {
         controller.current_entity = this;
-        System.out.println(getEnemyName() + " attacks player");
     }
 
     public void setLevel(Integer level) {

@@ -22,7 +22,6 @@ public class LevelData {
     public LevelData(AsciiMap map) {
         this.map = map;
         field = new PhysicField();
-        field.setMap(map);
         visible_items = new HashSet<>();
         effects = new HashSet<>();
         allEntity = new HashSet<>();

@@ -62,7 +62,6 @@ public class GameUtils {
     public static char findTileByCoords(char[][] map, int x, int y) {
         try {
             int[] indexes = findIndexesOfTileByCoords(map, x, y);
-            System.out.println(indexes[0] + " " + indexes[1]);
             return map[indexes[0]][indexes[1]];
         } catch (ArrayIndexOutOfBoundsException e) {
             e.printStackTrace();

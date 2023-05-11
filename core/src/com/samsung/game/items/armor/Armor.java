@@ -18,7 +18,7 @@ public abstract class Armor extends Item {
     public float getX() {
         if (owner == null) {
             visible = false;
-            return -1;
+            return super.getX();
         }
         return owner.getX();
     }
@@ -27,7 +27,7 @@ public abstract class Armor extends Item {
     public float getY() {
         if (owner == null) {
             visible = false;
-            return -1;
+            return super.getY();
         }
         return owner.getY();
     }

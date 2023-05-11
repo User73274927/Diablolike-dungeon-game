@@ -29,29 +29,30 @@ import java.util.Iterator;
 public class Level extends StageWrapper {
     private GameScreen game;
 
-    private final float WORLD_WIDTH = 640; // 16
-    private final float WORLD_HEIGHT = 320; // 9
-
-    final Viewport viewport;
+    Viewport viewport;
     final Camera game_camera = new OrthographicCamera();
-    final PlayerController controller;
-    public final PlayerControlField controls;
-    final Player player;
-    final LevelData data;
+    PlayerController controller;
+    public PlayerControlField controls;
+    Player player;
+    LevelData data;
     final AsciiMap map;
 
     public Level(GameScreen game, AsciiMap map) {
         this.game = game;
         this.map = map;
-        map.load();
+    }
 
+    public Level create() {
         data = new LevelData(map);
+        DGame.data = data;
+        map.load();
+        data.field.setMap(map);
+
         DGame.projectiles = new ProjectileManager<>();
         this.controls = game.player_controls;
         this.controller = game.controller;
         this.player = controller.getPlayer();
         controller.setCamera(game_camera);
-        player.setLocation(70, 70);
 
         viewport = new FitViewport(640, 640*DGame.getAspectRatio(), game_camera);
         setViewport(viewport);
@@ -60,9 +61,9 @@ public class Level extends StageWrapper {
         addActor(data.itemHandler);
 
         game.inputMultiplexer.addProcessor(this);
-    }
 
-    public Level create() {
+
+        //init entities
         data.addEntity(controller.getPlayer());
 
         for (Entity entity : map.getEntities()) {
@@ -80,8 +81,6 @@ public class Level extends StageWrapper {
         DGame.data = data;
         return this;
     }
-
-    boolean pause;
 
     public void render() {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);

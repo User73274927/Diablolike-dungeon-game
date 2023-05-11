@@ -21,10 +21,15 @@ public class Animations {
         addAnimation("hero-attack", 1f, textures.getTexture("sprites/player-sheet-attack.png"), 2);
 
         //enemies
-        addAnimation("monster1-right", 0.09f, textures.getTexture("sprites/monster1-idle-right.png"), 8);
-        getAnimation("monster1-right").setPlayMode(Animation.PlayMode.LOOP);
-        addAnimation("monster1-left", 0.09f, textures.getTexture("sprites/monster1-idle-left.png"), 8);
-        getAnimation("monster1-left").setPlayMode(Animation.PlayMode.LOOP);
+        addAnimation("monster-right", 0.06f, textures.getTexture("sprites/monster-idle-right.png"), 8);
+        getAnimation("monster-right").setPlayMode(Animation.PlayMode.LOOP);
+        addAnimation("monster-left", 0.06f, textures.getTexture("sprites/monster-idle-left.png"), 8);
+        getAnimation("monster-left").setPlayMode(Animation.PlayMode.LOOP);
+
+        addAnimation("mini-monster-right", 0.12f, textures.getTexture("sprites/mini-monster-idle-right.png"), 8);
+        getAnimation("mini-monster-right").setPlayMode(Animation.PlayMode.LOOP);
+        addAnimation("mini-monster-left", 0.12f, textures.getTexture("sprites/mini-monster-idle-left.png"), 8);
+        getAnimation("mini-monster-left").setPlayMode(Animation.PlayMode.LOOP);
     }
 
     public void addAnimation(String tag, float frame_duration, Texture texture, int rows) {

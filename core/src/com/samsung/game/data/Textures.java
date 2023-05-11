@@ -26,6 +26,7 @@ public class Textures {
         addTexture(TEXTURE_PACK1 + "floor-2.png");
         addTexture(TEXTURE_PACK1 + "wall-1.png");
         addTexture(TEXTURE_PACK1 + "wall-2.png");
+        addTexture(TEXTURE_PACK1 + "next-level.png");
 
         addTexture(TILES+"wall-example1.png");
         addTexture(TILES+"next-level.png");
@@ -49,8 +50,11 @@ public class Textures {
         addTexture(SPRITES+"player-sheet-attack.png");
         addTexture(SPRITES+"player-example1.png");
 
-        addTexture(SPRITES+"monster1-idle-left.png");
-        addTexture(SPRITES+"monster1-idle-right.png");
+        addTexture(SPRITES+"monster-idle-left.png");
+        addTexture(SPRITES+"monster-idle-right.png");
+
+        addTexture(SPRITES+"mini-monster-idle-left.png");
+        addTexture(SPRITES+"mini-monster-idle-right.png");
 
         //ui
         addTexture(UI+"button-next.png");

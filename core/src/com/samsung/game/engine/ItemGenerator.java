@@ -7,15 +7,10 @@ import com.samsung.game.items.potions.Potion;
 import com.samsung.game.items.potions.ManaPotion;
 
 public class ItemGenerator {
-    private Class<?>[] item_types = {
-        Armor.class, Helmet.class, Potion.class
-    };
-
     public Potion generatePotion() {
-        if (Math.random() <= 0.25) {
+        if (Math.random() <= 0.3) {
             return Math.random() <= 0.5 ? new ManaPotion() : new HealthPotion();
         }
         return null;
     }
-
 }

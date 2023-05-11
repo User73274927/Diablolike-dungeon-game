@@ -13,7 +13,7 @@ import com.samsung.game.items.PlayerEquipable;
 import java.util.Set;
 
 public class ColdWeapon extends Weapon implements Damage, PlayerEquipable<Entity> {
-    protected float attack_distance = 35;
+    protected float attack_distance = 45;
     private float time;
 
     public ColdWeapon(Entity owner) {
@@ -69,6 +69,7 @@ public class ColdWeapon extends Weapon implements Damage, PlayerEquipable<Entity
 
     @Override
     public String info() {
-        return "damage: " + getMinDamage() + "-" + getMinDamage() + " \n";
+        return super.info() +
+                "require mana: " + getRequireMana();
     }
 }

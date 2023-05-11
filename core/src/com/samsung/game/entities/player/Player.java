@@ -140,10 +140,15 @@ public class Player extends Entity {
 
     public void levelUp() {
         level += 1;
+        //если здоровья больше на 80 %, то восстановить полностью с повышением уровня
+        boolean healthIsFull = health >= max_health * 0.8;
+
         max_health += 5*level;
         max_mana += 5*level;
 
-        health = max_health;
+        if (healthIsFull) {
+            health = max_health;
+        }
         mana = max_mana;
     }
 

@@ -46,8 +46,8 @@ public abstract class Entity extends ActorWrapper implements Collideable, Lifecy
         body = new RigidBody(x, y);
 
         state = State.PASSIVE;
-        body.box.width = 30;
-        body.box.height = 30;
+        body.box.width = 25;
+        body.box.height = 25;
 
         body.addWallTouchedListener(new RigidBody.WallTouchedListener() {
             @Override
