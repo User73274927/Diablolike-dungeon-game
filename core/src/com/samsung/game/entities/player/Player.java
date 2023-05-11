@@ -5,14 +5,10 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.samsung.game.DGame;
-import com.samsung.game.engine.ProjectileManager;
 import com.samsung.game.engine.gdx.ActorWrapper;
 import com.samsung.game.entities.Entity;
 import com.samsung.game.items.Item;
-import com.samsung.game.items.armor.Armour;
-import com.samsung.game.items.armor.Helmet;
 import com.samsung.game.items.potions.Potion;
-import com.samsung.game.items.projectiles.Fireball;
 import com.samsung.game.items.weapon.*;
 import com.samsung.game.map.Tile;
 
@@ -135,7 +131,7 @@ public class Player extends Entity {
 
     @Override
     public void putDamage(int damage) {
-        health -= (int) (damage * ((inventory.armor != null) ? (float) inventory.armor.protection / 50 : 1));
+        health -= (int) (damage * ((inventory.armor != null) ? 1f - inventory.armor.protection*0.02 : 1));
     }
 
     public void levelUp() {

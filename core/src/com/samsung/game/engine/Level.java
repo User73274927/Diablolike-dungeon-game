@@ -1,10 +1,10 @@
 package com.samsung.game.engine;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -12,14 +12,11 @@ import com.samsung.game.DGame;
 import com.samsung.game.effects.Effect;
 import com.samsung.game.engine.gdx.StageWrapper;
 import com.samsung.game.entities.Enemy;
-import com.samsung.game.entities.Monster;
 import com.samsung.game.entities.Entity;
-import com.samsung.game.entities.Npc;
 import com.samsung.game.entities.player.Player;
 import com.samsung.game.entities.player.PlayerControlField;
 import com.samsung.game.entities.player.PlayerController;
 import com.samsung.game.items.Item;
-import com.samsung.game.items.potions.HealthPotion;
 import com.samsung.game.items.projectiles.Projectile;
 import com.samsung.game.map.AsciiMap;
 import com.samsung.game.screens.GameScreen;
@@ -36,6 +33,7 @@ public class Level extends StageWrapper {
     Player player;
     LevelData data;
     final AsciiMap map;
+    Sound background_sound;
 
     public Level(GameScreen game, AsciiMap map) {
         this.game = game;
@@ -74,11 +72,8 @@ public class Level extends StageWrapper {
             }
         }
 
-        Npc npc = new Npc(50, 350);
-
-        data.addEntity(npc);
-
-        DGame.data = data;
+        background_sound = Gdx.audio.newSound(Gdx.files.internal("background-1.mp3"));
+        background_sound.loop();
         return this;
     }
 
@@ -132,9 +127,14 @@ public class Level extends StageWrapper {
         render();
     }
 
+    public void stopMusic() {
+        background_sound.stop();
+    }
+
     @Override
     public void dispose() {
         data.removeAllEntity();
+        background_sound.dispose();
         super.dispose();
     }
 

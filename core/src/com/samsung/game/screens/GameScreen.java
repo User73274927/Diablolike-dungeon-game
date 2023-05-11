@@ -3,6 +3,7 @@ package com.samsung.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Sound;
 import com.samsung.game.DGame;
 import com.samsung.game.DiabloGame;
 import com.samsung.game.engine.Level;
@@ -13,7 +14,6 @@ import com.samsung.game.entities.player.PlayerController;
 import com.samsung.game.map.AsciiMap;
 import com.samsung.game.map.Map;
 import com.samsung.game.utils.Maps;
-import com.samsung.game.utils.TestAssets;
 
 import java.util.HashMap;
 
@@ -26,10 +26,12 @@ public class GameScreen extends ScreenAdapter {
 
     public final InputMultiplexer inputMultiplexer;
     private final java.util.Map<String, Level> scene_dict;
-    private StageWrapper current_level;
+    private Level current_level;
     public boolean paused;
     private State state;
+    private Sound game_over_sound;
     private Map[] maps;
+
 
     public GameScreen(DiabloGame context) {
         this(context, null);
@@ -45,6 +47,7 @@ public class GameScreen extends ScreenAdapter {
         controller = new PlayerController(this);
         player_controls = new PlayerControlField(controller);
         port = new PlayerViewPort(this, controller);
+        game_over_sound = Gdx.audio.newSound(Gdx.files.internal("game-over-sound.mp3"));
 
         scene_dict.put("level1", new Level(this, new AsciiMap(Maps.level1, controller.getPlayer())));
         scene_dict.put("level2", new Level(this, new AsciiMap(Maps.level2, controller.getPlayer())));
@@ -55,6 +58,7 @@ public class GameScreen extends ScreenAdapter {
         inputMultiplexer.addProcessor(controller);
     }
 
+    boolean flag = true;
     @Override
     public void render(float delta) {
         if (current_level == null) {
@@ -69,9 +73,9 @@ public class GameScreen extends ScreenAdapter {
             case RESUME:
         }
 
-        if (!controller.getPlayer().isEntityAlive()) {
-            port.player_info.setVisible(false);
-            port.setPanel(port.game_over_panel);
+        if (!controller.getPlayer().isEntityAlive() && flag) {
+            gameOver();
+            flag = false;
         }
 
         current_level.getViewport().apply();
@@ -100,6 +104,13 @@ public class GameScreen extends ScreenAdapter {
         changeLevel(scene_dict.get(key));
     }
 
+    public void gameOver() {
+        current_level.stopMusic();
+        game_over_sound.play(1f);
+        port.player_info.setVisible(false);
+        port.setPanel(port.game_over_panel);
+    }
+
     @Override
     public void resize(int width, int height) {
         current_level.getViewport().update(width, height);
@@ -109,6 +120,7 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void dispose() {
+        game_over_sound.dispose();
         for (StageWrapper level : scene_dict.values())
             level.dispose();
     }
