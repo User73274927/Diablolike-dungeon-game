@@ -133,7 +133,7 @@ public class Player extends Entity {
     public void putDamage(int damage) {
         health -= (int) (damage * ((inventory.armor != null) ? 1f - inventory.armor.protection*0.02 : 1));
     }
-
+    //
     public void levelUp() {
         level += 1;
         //если здоровья больше на 80 %, то восстановить полностью с повышением уровня
