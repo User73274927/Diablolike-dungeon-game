@@ -1,5 +1,6 @@
 package com.samsung.game.entities.player;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.samsung.game.engine.PlayerViewPort;
 import com.samsung.game.engine.gdx.GroupWrapper;
@@ -14,12 +15,15 @@ import com.samsung.game.items.armor.Helmet;
 import com.samsung.game.items.potions.Potion;
 import com.samsung.game.map.Tile;
 import com.samsung.game.ui.Picture;
+import com.samsung.game.ui.UIButton;
 import com.samsung.game.ui.UIInventory;
 import com.samsung.game.ui.panels.DescriptionPanel;
 import com.samsung.game.ui.panels.DialogHUD;
 import com.samsung.game.ui.panels.EnemyStatsHUD;
 import com.samsung.game.ui.panels.PlayerStatsHUD;
 import com.samsung.game.utils.DebugConsole;
+
+import static com.samsung.game.data.Textures.UI;
 
 public class PlayerHUD extends GroupWrapper {
     private final PlayerController controller;
@@ -38,6 +42,7 @@ public class PlayerHUD extends GroupWrapper {
 
     UIInventory potion_bar;
     UIInventory main_inventory;
+    UIButton open_close_inventory;
 
 
     public PlayerHUD(PlayerViewPort viewPort, PlayerController controller) {
@@ -102,7 +107,15 @@ public class PlayerHUD extends GroupWrapper {
 //        stamina.setBounds(Gdx.graphics.getWidth() - 100, Gdx.graphics.getHeight() - 100, 0, 0);
         stats_panel = new PlayerStatsHUD(controller.getPlayer());
         stats_panel.setBounds(viewPort.viewport_width - 200, viewPort.viewport_height - 125, 175, 100);
-        //stats_panel.setPosition(Gdx.graphics.getWidth() - 225, Gdx.graphics.getHeight() - 125, Align.topLeft);
+
+        open_close_inventory = new UIButton(new Texture(UI+"button-inventory.png"), new Texture(UI+"button-inventory.png"));
+        open_close_inventory.setBounds(viewPort.viewport_width - 255, viewPort.viewport_height - 55, 30, 30);
+        open_close_inventory.setClickAction(new UIButton.ClickAction() {
+            @Override
+            public void action() {
+                controller.openInventory();
+            }
+        });
 
         enemy_panel = new EnemyStatsHUD();
         enemy_panel.setWidth(150);
@@ -134,13 +147,12 @@ public class PlayerHUD extends GroupWrapper {
 //        console.setY(viewPort.viewport_height);
 //
 //        addActor(console);
+        addActor(open_close_inventory);
         addActor(enemy_panel);
         addActor(stats_panel);
         addActor(dialogHUD);
         addActor(main_inventory);
         addActor(potion_bar);
-//        addActor(health);
-//        addActor(stamina);
         addActor(weapon_view);
         addActor(armor_view);
         addActor(item_info);

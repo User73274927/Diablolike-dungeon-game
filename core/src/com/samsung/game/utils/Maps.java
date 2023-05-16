@@ -2,6 +2,10 @@ package com.samsung.game.utils;
 
 public class Maps {
     public static final char WALL = '#';
+    public static final char FLOOR = ' ';
+
+    public static final char ENEMY = 'E';
+
     public static final char HEALTH_POTION = '1';
     public static final char MANA_POTION = '2';
 

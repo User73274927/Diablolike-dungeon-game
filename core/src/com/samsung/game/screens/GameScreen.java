@@ -13,49 +13,48 @@ import com.samsung.game.entities.player.PlayerControlField;
 import com.samsung.game.entities.player.PlayerController;
 import com.samsung.game.map.AsciiMap;
 import com.samsung.game.map.Map;
+import com.samsung.game.ui.panels.GameOverPanel;
 import com.samsung.game.utils.Maps;
 
 import java.util.HashMap;
 
 public class GameScreen extends ScreenAdapter {
-    private final DiabloGame diabloGame;
+    private final DiabloGame context;
 
     public final PlayerController controller;
     public final PlayerControlField player_controls;
     public final PlayerViewPort port;
 
-    public final InputMultiplexer inputMultiplexer;
     private final java.util.Map<String, Level> scene_dict;
     private Level current_level;
     public boolean paused;
     private State state;
     private Sound game_over_sound;
-    private Map[] maps;
+    private GameOverPanel game_over_panel;
 
 
     public GameScreen(DiabloGame context) {
-        this(context, null);
-    }
-
-    public GameScreen(DiabloGame context, PlayerController player) {
-        this.diabloGame = context;
+        this.context = context;
         scene_dict = new HashMap<>();
-        inputMultiplexer = new InputMultiplexer();
-        Gdx.input.setInputProcessor(inputMultiplexer);
         state = State.RESUME;
 
         controller = new PlayerController(this);
         player_controls = new PlayerControlField(controller);
         port = new PlayerViewPort(this, controller);
         game_over_sound = Gdx.audio.newSound(Gdx.files.internal("game-over-sound.mp3"));
+        game_over_panel = new GameOverPanel(context, port);
+        game_over_panel.setVisible(false);
 
         scene_dict.put("level1", new Level(this, new AsciiMap(Maps.level1, controller.getPlayer())));
         scene_dict.put("level2", new Level(this, new AsciiMap(Maps.level2, controller.getPlayer())));
+    }
 
+    @Override
+    public void show() {
         changeLevel("level1");
-        inputMultiplexer.addProcessor(port);
-        inputMultiplexer.addProcessor(player_controls);
-        inputMultiplexer.addProcessor(controller);
+        context.multiplexer.addProcessor(port);
+        context.multiplexer.addProcessor(player_controls);
+        context.multiplexer.addProcessor(controller);
     }
 
     boolean flag = true;
@@ -108,7 +107,8 @@ public class GameScreen extends ScreenAdapter {
         current_level.stopMusic();
         game_over_sound.play(1f);
         port.player_info.setVisible(false);
-        port.setPanel(port.game_over_panel);
+        game_over_panel.setVisible(true);
+        port.setPanel(game_over_panel);
     }
 
     @Override
@@ -121,6 +121,11 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void dispose() {
         game_over_sound.dispose();
+
+        context.multiplexer.removeProcessor(port);
+        context.multiplexer.removeProcessor(player_controls);
+        context.multiplexer.removeProcessor(controller);
+
         for (StageWrapper level : scene_dict.values())
             level.dispose();
     }

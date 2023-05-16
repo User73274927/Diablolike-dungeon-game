@@ -90,15 +90,16 @@ public class PlayerController extends InputAdapter {
             context.paused = !context.paused;
             return false;
         }
-        if (keycode == Input.Keys.E) {
-            UIInventory bar = playerHUD.main_inventory;
-            DescriptionPanel list = playerHUD.item_info;
-            bar.setIsOpened(!bar.isOpened);
-            list.setVisible(!list.isVisible());
-            potionInventoryController.setOnTouchAction(list.isVisible() ? "info" : "use");
-            playerHUD.item_info.clean();
-        }
         return super.keyUp(keycode);
+    }
+
+    public void openInventory() {
+        UIInventory bar = playerHUD.main_inventory;
+        DescriptionPanel list = playerHUD.item_info;
+        bar.setIsOpened(!bar.isOpened);
+        list.setVisible(!list.isVisible());
+        potionInventoryController.setOnTouchAction(list.isVisible() ? "info" : "use");
+        playerHUD.item_info.clean();
     }
 
     public void startTalk(Npc npc) {

@@ -1,8 +1,10 @@
 package com.samsung.game.ui.panels;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.samsung.game.DGame;
+import com.samsung.game.DiabloGame;
 import com.samsung.game.data.Fonts;
 import com.samsung.game.data.Textures;
 import com.samsung.game.engine.PlayerViewPort;
@@ -18,7 +20,7 @@ public class GameOverPanel extends GroupWrapper {
 
     private UIButton menu_button;
 
-    public GameOverPanel(PlayerViewPort viewPort) {
+    public GameOverPanel(DiabloGame context, PlayerViewPort viewPort) {
         this.viewPort = viewPort;
         game_over_painter = DGame.fonts.getFont(Fonts.Type.PxFontTitle);
         game_over_text = "Game Over! :(";
@@ -33,7 +35,9 @@ public class GameOverPanel extends GroupWrapper {
         menu_button.setClickAction(new UIButton.ClickAction() {
             @Override
             public void action() {
-
+                context.multiplexer.clear();
+                context.getGameScreen().dispose();
+                context.setScreen(context.getMenuGame());
             }
         });
         addActor(menu_button);

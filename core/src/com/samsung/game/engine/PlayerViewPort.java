@@ -25,7 +25,6 @@ public class PlayerViewPort extends StageWrapper {
 
     //Scenes
     public final PlayerHUD player_info;
-    public final GameOverPanel game_over_panel;
 
     public PlayerViewPort(GameScreen screen, PlayerController player_controller) {
         this.player_controller = player_controller;
@@ -33,17 +32,14 @@ public class PlayerViewPort extends StageWrapper {
         viewport = new ScalingViewport(Scaling.fit, viewport_width, viewport_height);
 
         player_info = new PlayerHUD(this, player_controller);
-        game_over_panel = new GameOverPanel(this);
-        game_over_panel.setVisible(false);
 
         setViewport(viewport);
         addActor(player_info);
-        addActor(game_over_panel);
     }
 
     public void setPanel(GroupWrapper panel) {
+        addActor(panel);
         panel.setSize(viewport_width, viewport_height);
-        panel.setVisible(true);
     }
 
     @Override
@@ -51,7 +47,4 @@ public class PlayerViewPort extends StageWrapper {
         return camera;
     }
 
-    public void getTileMap() {
-
-    }
 }

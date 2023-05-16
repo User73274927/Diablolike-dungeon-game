@@ -58,9 +58,6 @@ public class Level extends StageWrapper {
         addActor(data.entityHandler);
         addActor(data.itemHandler);
 
-        game.inputMultiplexer.addProcessor(this);
-
-
         //init entities
         data.addEntity(controller.getPlayer());
 
@@ -73,7 +70,7 @@ public class Level extends StageWrapper {
         }
 
         background_sound = Gdx.audio.newSound(Gdx.files.internal("background-1.mp3"));
-        background_sound.loop();
+        background_sound.loop(0.5f);
         return this;
     }
 
@@ -133,9 +130,13 @@ public class Level extends StageWrapper {
 
     @Override
     public void dispose() {
-        data.removeAllEntity();
-        background_sound.dispose();
         super.dispose();
+        if (data != null) {
+            data.removeAllEntity();
+        }
+        if (background_sound != null) {
+            background_sound.dispose();
+        }
     }
 
 }
